@@ -25,19 +25,14 @@ public class SebulbaResource {
     @Inject
     SebulbaService service;
 
+    @Inject
+    SebulbaConfiguration config;
+
     private DseSession session;
     private DSEStmts.Prepared stmts;
 
     @Inject
     private void setup() {
-        SebulbaConfiguration config = new SebulbaConfiguration(
-                new String[]{"localhost"},
-                9042,
-                null,
-                null,
-                "sebulba",
-                "{'class': 'SimpleStrategy', 'replication_factor': 1 }"
-        );
         dseManager.configure(config);
         dseManager.start();
         session = dseManager.getSession();

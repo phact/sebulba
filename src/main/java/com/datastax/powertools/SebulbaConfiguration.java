@@ -7,73 +7,49 @@ package com.datastax.powertools;
  */
 
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.enterprise.context.ApplicationScoped;
+
+
+@ApplicationScoped
 public class SebulbaConfiguration {
 
-    private String[] contactPoints;
+    @ConfigProperty(name = "dse.contactPoints", defaultValue = "localhost")
+    private String contactPoints;
+    @ConfigProperty(name = "dse.ports", defaultValue = "9042")
     private int cqlPort;
-    private String cqlUserName = "cassandra";
-    private String cqlPassword = "cassandra";
+    @ConfigProperty(name = "dse.cqlUserName", defaultValue = "cassandra")
+    private String cqlUserName;
+    @ConfigProperty(name = "dse.cqlPassword", defaultValue = "cassandra")
+    private String cqlPassword;
+    @ConfigProperty(name = "dse.keyspaceName", defaultValue = "sebulba")
     private String keyspaceName;
+    @ConfigProperty(name = "dse.replicationStrategy", defaultValue ="{'class': 'SimpleStrategy', 'replication_factor': 1 }")
     private String replicationStrategy;
 
-    public SebulbaConfiguration(String[] contactPoints, int cqlPort, String cqlUserName, String cqlPassword, String keyspaceName, String replicationStrategy) {
-        this.contactPoints = contactPoints;
-        this.cqlPort = cqlPort;
-        if (cqlUserName != null) {
-            this.cqlUserName = cqlUserName;
-        }
-        if (cqlPassword!= null) {
-            this.cqlPassword = cqlPassword;
-        }
-        this.keyspaceName = keyspaceName;
-        this.replicationStrategy = replicationStrategy;
-    }
-
-    public String[] getContactPoints() {
+    public String getContactPoints() {
         return contactPoints;
-    }
-
-    public void setContactPoints(String[] contactPoints) {
-        this.contactPoints = contactPoints;
     }
 
     public int getCqlPort() {
         return cqlPort;
     }
 
-    public void setCqlPort(int cqlPort) {
-        this.cqlPort = cqlPort;
-    }
-
     public String getCqlUserName() {
         return cqlUserName;
-    }
-
-    public void setCqlUserName(String cqlUserName) {
-        this.cqlUserName = cqlUserName;
     }
 
     public String getCqlPassword() {
         return cqlPassword;
     }
 
-    public void setCqlPassword(String cqlPassword) {
-        this.cqlPassword = cqlPassword;
-    }
-
     public String getKeyspaceName() {
         return keyspaceName;
-    }
-
-    public void setKeyspaceName(String keyspaceName) {
-        this.keyspaceName = keyspaceName;
     }
 
     public String getReplicationStrategy() {
         return replicationStrategy;
     }
 
-    public void setReplicationStrategy(String replicationStrategy) {
-        this.replicationStrategy = replicationStrategy;
-    }
 }

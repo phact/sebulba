@@ -20,8 +20,8 @@ public class DSEManager {
     private static final Logger LOG = Logger.getLogger(DSEManager.class);
 
 
-    private int cqlPort = 9042;
-    private String[] contactPoints = new String[]{"localhost"};
+    private int cqlPort;
+    private String[] contactPoints;
     private DseCluster cluster;
     private DSEStmts.Prepared stmts;
 
@@ -36,7 +36,7 @@ public class DSEManager {
     private String replicationStrategy;
 
     public void configure(SebulbaConfiguration config) {
-        contactPoints = config.getContactPoints();
+        contactPoints = config.getContactPoints().split(",");
         cqlPort = config.getCqlPort();
         username = config.getCqlUserName();
         password = config.getCqlPassword();
