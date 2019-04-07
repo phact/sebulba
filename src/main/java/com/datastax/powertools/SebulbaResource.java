@@ -20,12 +20,15 @@ import java.util.UUID;
 public class SebulbaResource {
 
     @Inject
+    DSEManager dseManager;
+
+    @Inject
     SebulbaService service;
 
-    private DSEManager dseManager = new DSEManager();
     private DseSession session;
     private DSEStmts.Prepared stmts;
 
+    @Inject
     private void setup() {
         SebulbaConfiguration config = new SebulbaConfiguration(
                 new String[]{"localhost"},
@@ -45,11 +48,6 @@ public class SebulbaResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/event/{racerName}")
     public String insertEvent(@PathParam("racerName") String racerName) {
-
-        if (session == null){
-            setup();
-        }
-
         UUID event_id = UUIDs.timeBased();
         String event_type = "register";
 

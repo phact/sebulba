@@ -13,6 +13,9 @@ import com.datastax.driver.dse.DseSession;
 import com.datastax.powertools.SebulbaConfiguration;
 import org.jboss.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class DSEManager {
     private static final Logger LOG = Logger.getLogger(DSEManager.class);
 

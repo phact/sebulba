@@ -33,7 +33,7 @@ class Dashboard extends PureComponent {
           <Paper className="half-paper" elevation={1}>
             <div className="inside-container">
             <Typography variant="h6" color="inherit" noWrap>
-              Races
+              Races by Racer
             </Typography>
 
             <Grid className="overflow-holder">
