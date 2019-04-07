@@ -6,6 +6,7 @@ Sebulba uses quarkus which means you need these prereqs to build:
 
  - JDK 1.8+ installed with `JAVA_HOME` configured appropriately
  - Apache Maven 3.5.3+
+ - DSE or cassandra running on localhost
 
 ## For dev
 

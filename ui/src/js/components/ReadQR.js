@@ -1,6 +1,8 @@
 import React, {PureComponent} from 'react';
 import { connect } from 'react-redux';
 
+import {updateValue} from '../actions/actions';
+
 //MUI
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -17,7 +19,10 @@ class ReadQR extends PureComponent {
     const rows = [];
     return (
       <div className="inside-container">
-        <QrReader/>
+        <QrReader
+          delay={300}
+          onScan={x => x != null ? this.props.updateValue("qrCode", x) : null } 
+        />
         <p>{this.props.app.qrCode}</p>
       </div>
     );
