@@ -1,0 +1,68 @@
+.control-items{
+    margin: 4.5% !important;
+}
+.basepage{
+    margin-left: 80px;
+}
+.side-grid{
+    width:20%;
+}
+.paper {
+    margin: 4.5%;
+    width:70%;
+    min-height: 700px;
+    /*background-image: linear-gradient(#081846,#307ccd, #858ce6, #0F2C62);*/
+}
+.half-paper {
+    margin: 4.5%;
+    width: 40%;
+    min-height: 700px;
+}
+.control {
+    margin: 4.5%;
+    width:100%;
+    min-height: 300px;
+}
+.control-large {
+    margin: 4.5%;
+    width:100%;
+    min-height: 613px;
+    height: 700px;
+    overflow: auto;
+}
+.control-container {
+    padding: 3%;
+}
+.tabs {
+    padding: 3%;
+    margin: 4.5%;
+    width:100%;
+}
+.tab {
+    min-width:30% !important;
+}
+.container {
+    padding: 3%;
+    position:relative;
+    min-height: 700px;
+    background-image: url(../img/stax.png);
+    background-repeat: no-repeat;
+    background-position: right top;
+}
+.inside-container {
+    padding: 3%;
+    position:relative;
+    min-height: 700px;
+}
+.
+.app p {
+  color: blue;
+}
+.overflow-holder{
+    overflow: auto;
+    min-height:700px;
+}
+body {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}

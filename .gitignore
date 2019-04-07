@@ -1,0 +1,8 @@
+nohup.out
+.idea/
+node_modules/
+target/
+.DS_Store
+*.iml
+quarkus.log
+.mvn
