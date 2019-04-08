@@ -1,0 +1,9 @@
+{
+  "sebulba": {
+    "configuration": {
+      "config": {
+        "webpackOptions": {}
+      }
+    }
+  }
+}

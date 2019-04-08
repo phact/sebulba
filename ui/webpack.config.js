@@ -27,49 +27,43 @@ const join = require('path').join;
 const webpack = require('webpack');
 const path = require('path');
 
-
 const CONFIG = {
-  // bundle app.js and everything it imports, recursively.
-  entry: {
-    app: resolve('./src/js/main.js')
-  },
 
-  devtool: 'eval',
+  performance: { hints: false },
+	// bundle app.js and everything it imports, recursively.
+	entry: {
+		app: resolve('./src/js/main.js')
+	},
 
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: join(__dirname, 'src'),
-        exclude: [/node_modules/]
-      },
-      {
-        // The example has some JSON data
-        test: /\.json$/,
-        loader: 'json-loader',
-        exclude: [/node_modules/]
-      },
-      {
-        test: /\.css$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-        ],
-      },
-      {
-        test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
-        use: [
-          { loader: 'url-loader?limit=100000' }
-        ],
-      },
-      {
-         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-         use: [
-           { loader: 'url?limit=10000&mimetype=image/svg+xml'}
-         ]
-      }
-      /*
+	devtool: 'eval',
+
+	module: {
+		rules: [
+			{
+				test: /\.js$/,
+				loader: 'babel-loader',
+				include: join(__dirname, 'src'),
+				exclude: [/node_modules/]
+			},
+			{
+				// The example has some JSON data
+				test: /\.json$/,
+				loader: 'json-loader',
+				exclude: [/node_modules/]
+			},
+			{
+				test: /\.css$/,
+				use: [{ loader: 'style-loader' }, { loader: 'css-loader' }]
+			},
+			{
+				test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
+				use: [{ loader: 'url-loader?limit=100000' }]
+			},
+			{
+				test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+				use: [{ loader: 'url?limit=10000&mimetype=image/svg+xml' }]
+			}
+			/*
       {
         test: /\.css$/,
         loader: 'style-loader'
@@ -82,61 +76,62 @@ const CONFIG = {
         }
       }
       */
-    ]
-  },
+		]
+	},
 
-  node: {
-    fs: 'empty'
-  },
+	node: {
+		fs: 'empty'
+	}
 };
 
 const PROD = {
-  output: {
-      path: path.resolve(__dirname, '../src/main/resources/META-INF/resources/'),
-      filename: "bundle.js"
+  performance: { hints: false },
+	output: {
+		path: path.resolve(__dirname, '../src/main/resources/META-INF/resources/'),
+		filename: 'bundle.js'
+	},
+
+	// bundle app.js and everything it imports, recursively.
+	entry: {
+		app: resolve('./src/js/main.js')
+	},
+
+			/*
+  optimization: {
+    splitChunks: {
+      // include all types of chunks
+      chunks: 'all'
+    }
   },
+			*/
 
-  // bundle app.js and everything it imports, recursively.
-  entry: {
-    app: resolve('./src/js/main.js')
-  },
-
-  devtool: 'eval',
-
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: join(__dirname, 'src'),
-        exclude: [/node_modules/]
-      },
-      {
-        // The example has some JSON data
-        test: /\.json$/,
-        loader: 'json-loader',
-        exclude: [/node_modules/]
-      },
-      {
-        test: /\.css$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-        ],
-      },
-      {
-        test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
-        use: [
-          { loader: 'url-loader?limit=100000' }
-        ],
-      },
-      {
-         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-         use: [
-           { loader: 'url-loader?limit=10000&mimetype=image/svg+xml'}
-         ]
-      }
-      /*
+	module: {
+		rules: [
+			{
+				test: /\.js$/,
+				loader: 'babel-loader',
+				include: join(__dirname, 'src'),
+				exclude: [/node_modules/]
+			},
+			{
+				// The example has some JSON data
+				test: /\.json$/,
+				loader: 'json-loader',
+				exclude: [/node_modules/]
+			},
+			{
+				test: /\.css$/,
+				use: [{ loader: 'style-loader' }, { loader: 'css-loader' }]
+			},
+			{
+				test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
+				use: [{ loader: 'url-loader?limit=100000' }]
+			},
+			{
+				test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+				use: [{ loader: 'url-loader?limit=10000&mimetype=image/svg+xml' }]
+			}
+			/*
       {
         test: /\.css$/,
         loader: 'style-loader'
@@ -149,12 +144,12 @@ const PROD = {
         }
       }
       */
-    ]
-  },
+		]
+	},
 
-  node: {
-    fs: 'empty'
-  },
+	node: {
+		fs: 'empty'
+	}
 };
 
 // This line enables bundling against src in this repo rather than installed deck.gl module
