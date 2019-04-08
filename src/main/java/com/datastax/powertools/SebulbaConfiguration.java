@@ -16,17 +16,17 @@ import javax.enterprise.context.ApplicationScoped;
 public class SebulbaConfiguration {
 
     @ConfigProperty(name = "dse.contactPoints", defaultValue = "localhost")
-    private String contactPoints;
+    String contactPoints;
     @ConfigProperty(name = "dse.ports", defaultValue = "9042")
-    private int cqlPort;
+    int cqlPort;
     @ConfigProperty(name = "dse.cqlUserName", defaultValue = "cassandra")
-    private String cqlUserName;
+    String cqlUserName;
     @ConfigProperty(name = "dse.cqlPassword", defaultValue = "cassandra")
-    private String cqlPassword;
+    String cqlPassword;
     @ConfigProperty(name = "dse.keyspaceName", defaultValue = "sebulba")
-    private String keyspaceName;
+    String keyspaceName;
     @ConfigProperty(name = "dse.replicationStrategy", defaultValue ="{'class': 'SimpleStrategy', 'replication_factor': 1 }")
-    private String replicationStrategy;
+    String replicationStrategy;
 
     public String getContactPoints() {
         return contactPoints;

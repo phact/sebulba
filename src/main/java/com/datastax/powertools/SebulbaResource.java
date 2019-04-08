@@ -32,7 +32,7 @@ public class SebulbaResource {
     private DSEStmts.Prepared stmts;
 
     @Inject
-    private void setup() {
+    void setup() {
         dseManager.configure(config);
         dseManager.start();
         session = dseManager.getSession();
