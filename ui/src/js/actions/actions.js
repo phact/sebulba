@@ -10,6 +10,21 @@ export function updateValue(key, value){
    }
 }
 
+export function getRequest(path){
+   return(dispatch, getState) => {
+        get({
+            url:path,
+            success: function(res){
+              console.log("successful: "+ JSON.stringify(res) + " get request " + path)
+            },
+            failure: function(error){
+              alert(error)
+            },
+        dispatch: dispatch
+        });
+   }
+}
+
 export const updateData = (type, data) => {
     return {
         type: type,
@@ -17,4 +32,4 @@ export const updateData = (type, data) => {
     }
 }
 
-export default {updateValue};
+export default {updateValue, getRequest};

@@ -16,7 +16,7 @@ export default class HomePage extends PureComponent {
              Many will race, one shall win.
           </Typography>
           <br />
-          <Paper className="paper" elevation={1}>
+          <Paper className="half-paper">
             <ReadQR/>
           </Paper>
         </div>
