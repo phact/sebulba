@@ -4,6 +4,7 @@ import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.utils.UUIDs;
 import com.datastax.driver.dse.DseSession;
+import com.datastax.powertools.api.DronePosition;
 import com.datastax.powertools.api.Event;
 import com.datastax.powertools.managed.DSEManager;
 import com.datastax.powertools.managed.DSEStmts;
@@ -122,6 +123,44 @@ public class SebulbaResource {
         session.execute(query);
 
         return event;
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/position/")
+    public DronePosition insertPosition(DronePosition position) {
+        UUID event_uuid = UUIDs.timeBased();
+        String event_type = "payload";
+
+        //"(mvo_vel_x,mvo_vel_y,mvo_vel_z,mvo.pos_x,mvo.pos_y,mvo_pos_z,imu_acc_x,imu_acc_y,imu_acc_z,
+        // imu_gyro_x,imu_gyro_y,imu_gyro_z,imu_q0,imu_q1,imu_q2, self_q3,imu_vg_x,imu_vg_y,imu_vg_z)" +
+        PreparedStatement insertEvent = stmts.getInsertPosition();
+        BoundStatement query = insertEvent.bind()
+                .setString("id", racerName)
+                .setLong("time", new Date().getTime())
+                .setDouble("mvo_vel_x", position.getMvoVelX())
+                .setDouble("mvo_vel_y", position.getMvoVelY())
+                .setDouble("mvo_vel_z", position.getMvoVelZ())
+                .setDouble("mvo_pos_x", position.getMvoPosX())
+                .setDouble("mvo_pos_y", position.getMvoPosY())
+                .setDouble("mvo_pos_z", position.getMvoPosZ())
+                .setDouble("imu_acc_x", position.getImuAccX())
+                .setDouble("imu_acc_y", position.getImuAccY())
+                .setDouble("imu_acc_z", position.getImuAccZ())
+                .setDouble("imu_gyro_x", position.getImuGyroX())
+                .setDouble("imu_gyro_y", position.getImuGyroY())
+                .setDouble("imu_gyro_z", position.getImuGyroZ())
+                .setDouble("imu_q0", position.getImuQ0())
+                .setDouble("imu_q1", position.getImuQ1())
+                .setDouble("imu_q2", position.getImuQ2())
+                .setDouble("self_q3", position.getSelfQ3())
+                .setDouble("imu_vg_x", position.getImuVgX())
+                .setDouble("imu_vg_y", position.getImuVgY())
+                .setDouble("imu_vg_z", position.getImuVgZ());
+        session.execute(query);
+
+        return position;
     }
 
 
