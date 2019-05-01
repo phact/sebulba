@@ -5,4 +5,3 @@ target/
 .DS_Store
 *.iml
 quarkus.log
-.mvn
