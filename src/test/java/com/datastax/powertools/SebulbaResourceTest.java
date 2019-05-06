@@ -16,7 +16,7 @@ public class SebulbaResourceTest {
         String uuid = UUID.randomUUID().toString();
         given()
                 .pathParam("name", uuid)
-                .when().get("/sebulba/event/{name}")
+                .when().get("/sebulba/setup/{name}")
                 .then()
                 .statusCode(200)
                 .body(is("event saved for: " + uuid));
