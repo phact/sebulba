@@ -12,7 +12,7 @@ import javax.json.bind.annotation.JsonbProperty;
 public class DronePosition {
 
     //mvo.vel_x,mvo.vel_y,mvo.vel_z,mvo.pos_x,mvo.pos_y,mvo.pos_z,imu.acc_x,imu.acc_y,
-    // imu.acc_z,imu.gyro_x,imu.gyro_y,imu.gyro_z,imu.q0,imu.q1,imu.q2, self.q3,imu.vg_x,imu.vg_y,imu.vg_z
+    // imu.acc_z,imu.gyro_x,imu.gyro_y,imu.gyro_z,imu.q0,imu.q1,imu.q2, imu.q3,imu.vg_x,imu.vg_y,imu.vg_z
     @JsonbProperty("mvo.vel_x")
     private double mvoVelX;
     @JsonbProperty("mvo.vel_y")
@@ -43,8 +43,8 @@ public class DronePosition {
     private double imuQ1;
     @JsonbProperty("imu.q2")
     private double imuQ2;
-    @JsonbProperty("self.q3")
-    private double selfQ3;
+    @JsonbProperty("imu.q3")
+    private double imuQ3;
     @JsonbProperty("imu.vg_x")
     private double imuVgX;
     @JsonbProperty("imu.vg_y")
@@ -175,12 +175,12 @@ public class DronePosition {
         this.imuQ2 = imuQ2;
     }
 
-    public double getSelfQ3() {
-        return selfQ3;
+    public double getImuQ3() {
+        return imuQ3;
     }
 
-    public void setSelfQ3(double selfQ3) {
-        this.selfQ3 = selfQ3;
+    public void setIMuQ3(double imuQ3) {
+        this.imuQ3 = imuQ3;
     }
 
     public double getImuVgY() {

@@ -134,7 +134,7 @@ public class SebulbaResource {
         String event_type = "payload";
 
         //"(mvo_vel_x,mvo_vel_y,mvo_vel_z,mvo.pos_x,mvo.pos_y,mvo_pos_z,imu_acc_x,imu_acc_y,imu_acc_z,
-        // imu_gyro_x,imu_gyro_y,imu_gyro_z,imu_q0,imu_q1,imu_q2, self_q3,imu_vg_x,imu_vg_y,imu_vg_z)" +
+        // imu_gyro_x,imu_gyro_y,imu_gyro_z,imu_q0,imu_q1,imu_q2, imu_q3,imu_vg_x,imu_vg_y,imu_vg_z)" +
         PreparedStatement insertEvent = stmts.getInsertPosition();
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
@@ -154,7 +154,7 @@ public class SebulbaResource {
                 .setDouble("imu_q0", position.getImuQ0())
                 .setDouble("imu_q1", position.getImuQ1())
                 .setDouble("imu_q2", position.getImuQ2())
-                .setDouble("self_q3", position.getSelfQ3())
+                .setDouble("imu_q3", position.getSelfQ3())
                 .setDouble("imu_vg_x", position.getImuVgX())
                 .setDouble("imu_vg_y", position.getImuVgY())
                 .setDouble("imu_vg_z", position.getImuVgZ());

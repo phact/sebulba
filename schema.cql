@@ -37,7 +37,7 @@ create Table sebulba.position_by_racer
   imu_q0 double,
   imu_q1 double,
   imu_q2 double,
-  self_q3 double,
+  imu_q3 double,
   imu_vg_x double,
   imu_vg_y double,
   imu_vg_z double,
