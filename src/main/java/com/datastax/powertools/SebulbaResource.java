@@ -154,7 +154,7 @@ public class SebulbaResource {
                 .setDouble("imu_q0", position.getImuQ0())
                 .setDouble("imu_q1", position.getImuQ1())
                 .setDouble("imu_q2", position.getImuQ2())
-                .setDouble("imu_q3", position.getSelfQ3())
+                .setDouble("imu_q3", position.getImuQ3())
                 .setDouble("imu_vg_x", position.getImuVgX())
                 .setDouble("imu_vg_y", position.getImuVgY())
                 .setDouble("imu_vg_z", position.getImuVgZ());
