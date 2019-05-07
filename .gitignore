@@ -5,3 +5,6 @@ target/
 .DS_Store
 *.iml
 quarkus.log
+
+# built ui files
+src/main/resources/META-INF/resources/*
