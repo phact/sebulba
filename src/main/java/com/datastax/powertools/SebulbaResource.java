@@ -34,6 +34,9 @@ public class SebulbaResource {
     @SessionScoped
     private String racerName = "unknown";
 
+    @SessionScoped
+    private long startTime;
+
     @Inject
     void setup() {
         dseManager.configure(config);
@@ -66,18 +69,72 @@ public class SebulbaResource {
     @Path("/stop/")
     public String stopRace() {
         UUID event_uuid = UUIDs.timeBased();
+        UUID race_id = UUIDs.timeBased();
         String event_type = "stop";
 
+        long endTime= new Date().getTime();
+
         PreparedStatement insertEvent = stmts.getInsertEvent();
+        //"(id, racer_id , duration ,start_time, end_time , alt_avg , bat_avg , cam_avg , mode_avg , spd_avg , temp_height_avg , wifi_avg ) " +
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
                 .setUUID("event_uuid", event_uuid)
                 .setString("event_type", event_type)
                 .setLong("end_time", new Date().getTime());
+
+        session.execute(query);
+
+        PreparedStatement insertRaceSummary = stmts.getInsertRaceSummary();
+        query = insertRaceSummary.bind()
+                .setString("id", "race-"+race_id.toString())
+                .setString("racer_id", racerName)
+                .setLong("duration", endTime-startTime)
+                .setLong("start_time", startTime)
+                .setLong("end_time", endTime);
+        //TODO: compute the averages
+
         session.execute(query);
 
         return service.confirmation(racerName);
     }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/fail/")
+    public String failRace() {
+        UUID event_uuid = UUIDs.timeBased();
+        UUID race_id = UUIDs.timeBased();
+        String event_type = "fail";
+
+        long endTime= new Date().getTime();
+
+        PreparedStatement insertEvent = stmts.getInsertEvent();
+        //"(id, racer_id , duration ,start_time, end_time , alt_avg , bat_avg , cam_avg , mode_avg , spd_avg , temp_height_avg , wifi_avg ) " +
+        BoundStatement query = insertEvent.bind()
+                .setString("id", racerName)
+                .setUUID("event_uuid", event_uuid)
+                .setString("event_type", event_type)
+                .setLong("end_time", new Date().getTime());
+
+        session.execute(query);
+
+        //TODO: Decide on whether we should have summaries for failed races. Maybe a new table or introduce race_type?
+        /*
+        PreparedStatement insertRaceSummary = stmts.getInsertRaceSummary();
+        query = insertRaceSummary.bind()
+                .setString("id", "race-"+race_id.toString())
+                .setString("racer_id", racerName)
+                .setLong("duration", 99999999)
+                .setLong("start_time", startTime)
+                .setLong("end_time", endTime);
+        */
+        //TODO: compute the averages
+
+        session.execute(query);
+
+        return service.confirmation(racerName);
+    }
+
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -86,12 +143,14 @@ public class SebulbaResource {
         UUID event_uuid = UUIDs.timeBased();
         String event_type = "start";
 
+        startTime = new Date().getTime();
+
         PreparedStatement insertEvent = stmts.getInsertEvent();
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
                 .setUUID("event_uuid", event_uuid)
                 .setString("event_type", event_type)
-                .setLong("start_time", new Date().getTime());
+                .setLong("start_time", startTime);
         session.execute(query);
 
         return service.confirmation(racerName);

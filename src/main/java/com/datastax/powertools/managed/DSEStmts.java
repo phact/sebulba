@@ -26,6 +26,7 @@ public class DSEStmts {
         final PreparedStatement create_keyspace;
         private PreparedStatement insertEvent;
         private PreparedStatement insertPosition;
+        private PreparedStatement insertRaceSummary;
 
         public Prepared(Session session, String keyspace, String replicationStrategy) {
             this.keyspace = keyspace;
@@ -51,6 +52,12 @@ public class DSEStmts {
                     "VALUES" +
                     "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             insertPosition = prepare(statement);
+            statement = "INSERT INTO sebulba.races_by_duration " +
+                    "(id, racer_id , duration ,start_time, end_time , alt_avg , bat_avg , cam_avg , mode_avg , spd_avg , temp_height_avg , wifi_avg ) " +
+                    "VALUES" +
+                    "(?,?,?,?,?,?,?,?,?,?,?,?)";
+            insertRaceSummary = prepare(statement);
+
         }
 
         public PreparedStatement prepare(String stmt) {
@@ -74,6 +81,9 @@ public class DSEStmts {
         }
         public PreparedStatement getInsertPosition() {
             return insertPosition;
+        }
+        public PreparedStatement getInsertRaceSummary() {
+            return insertRaceSummary;
         }
     }
 }

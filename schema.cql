@@ -15,8 +15,10 @@ create TABLE sebulba.events_by_racer
     spd bigint,
     temp_height bigint,
     wifi bigint,
-    PRIMARY KEY ( id, event_uuid)
-);
+    PRIMARY KEY ( id, start_time, event_uuid)
+)
+WITH CLUSTERING ORDER BY ( start_time desc)
+;
 
 create Table sebulba.position_by_racer
 (
@@ -42,4 +44,26 @@ create Table sebulba.position_by_racer
   imu_vg_y double,
   imu_vg_z double,
   PRIMARY KEY (id, time)
-);
+)
+WITH CLUSTERING ORDER BY ( time desc)
+;
+
+create TABLE sebulba.races_by_duration
+(
+    id text,
+    racer_id text,
+	race_status text,
+    duration bigint,
+    start_time bigint,
+    end_time bigint,
+    alt_avg bigint,
+    bat_avg bigint,
+    cam_avg bigint,
+    mode_avg bigint,
+    spd_avg bigint,
+    temp_height_avg bigint,
+    wifi_avg bigint,
+    PRIMARY KEY ( racer_id, duration, id)
+)
+WITH CLUSTERING ORDER BY ( duration desc)
+;
