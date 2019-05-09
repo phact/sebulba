@@ -7,4 +7,10 @@ target/
 quarkus.log
 
 # built ui files
-src/main/resources/META-INF/resources/*
+src/main/resources/META-INF/resources/asset-manifest.json
+src/main/resources/META-INF/resources/precache-manifest.*.js
+src/main/resources/META-INF/resources/favicon.png
+src/main/resources/META-INF/resources/service-worker.js                                    
+src/main/resources/META-INF/resources/index.html
+src/main/resources/META-INF/resources/static/                                              
+src/main/resources/META-INF/resources/manifest.json  
