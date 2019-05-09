@@ -11,7 +11,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Paper from "@material-ui/core/Paper";
 import HelicopterIcon from "mdi-material-ui/Helicopter";
-import EndRaceDialog from "./EndRaceDialog";
+import { useSnackbar } from "notistack";
+import axios from "axios";
+import constants from "../constants";
 
 const useStyles = makeStyles(theme => ({
   loading: {
@@ -33,11 +35,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const raceTemplate = {
-  id: null,
   status: null,
   running: false,
   racer: {
-    id: null,
     name: null,
     company: null,
     loading: true
@@ -46,44 +46,78 @@ const raceTemplate = {
 
 const OperatorRace = ({ history, match }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   // setup the race state
   const [race, setRace] = React.useState(raceTemplate);
 
   // load racer based on url param
   React.useEffect(() => {
-    //TODO: get the racer details from the REST API, handle errors
-    //GET "/sebulba/setup/" + match.params.id
-    setTimeout(() => {
-      setRace({
-        ...race,
-        racer: {
-          id: "crw-a7knr32",
-          name: "Chris Wilhite",
-          company: "DataStax",
-          loading: false
+    if (!match.params.id) {
+      enqueueSnackbar("A valid racer ID is required", { variant: "error" });
+      return history.push("/operator");
+    }
+    const racer = {
+      name: match.params.id,
+      loading: false
+    };
+    axios
+      .get(constants.API_BASE_URL + "/sebulba/setup/" + match.params.id)
+      .then(res => {
+        console.log(res);
+        // if user data exists, set it
+        if (res.data.racer) {
+          racer.name = res.data.racer.name;
+          racer.company = res.data.racer.company;
         }
+        setRace({
+          ...race,
+          racer: racer
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        enqueueSnackbar(err.message, { variant: "error" });
+        setRace({
+          ...race,
+          racer: racer
+        });
       });
-    }, 3000);
   }, []); // run once!
 
   const startRace = () => {
-    setRace({
-      ...race,
-      running: true
-    });
-    //TODO: post the race to the REST API
-    //GET "/sebulba/start"
+    axios
+      .get(constants.API_BASE_URL + "/sebulba/start")
+      .then(res => {
+        console.log(res);
+        setRace({
+          ...race,
+          running: true
+        });
+        enqueueSnackbar("Race started!");
+      })
+      .catch(err => {
+        console.error(err);
+        enqueueSnackbar(err.message, { variant: "error" });
+      });
   };
 
   const endRace = raceStatus => {
-    setRace({
-      ...race,
-      status: raceStatus,
-      running: false
-    });
-    //TODO: save the race to the REST API
-    //GET "/sebulba/stop"
-    history.push("/operator");
+    axios
+      .get(constants.API_BASE_URL + "/sebulba/stop?status=" + raceStatus)
+      .then(res => {
+        console.log(res);
+        setRace({
+          ...race,
+          status: raceStatus,
+          running: false
+        });
+        enqueueSnackbar("Race ended with status: " + raceStatus);
+        history.push("/operator");
+      })
+      .catch(err => {
+        console.error(err);
+        enqueueSnackbar(err.message, { variant: "error" });
+      });
   };
 
   return (
@@ -133,29 +167,35 @@ const OperatorRace = ({ history, match }) => {
       {race.running === true && (
         <Grid container spacing={2} className={classes.buttonContainer}>
           <Grid item xs={12}>
-            <EndRaceDialog
-              raceStatus="cancelled"
-              buttonVariant="outlined"
-              buttonTitle="Cancel Race"
-              saveRace={() => endRace("cancelled")}
-            />
+            <Button
+              fullWidth
+              size="large"
+              variant="outlined"
+              onClick={() => endRace("cancelled")}
+            >
+              Cancel Race
+            </Button>
           </Grid>
           <Grid item xs={12}>
-            <EndRaceDialog
-              raceStatus="crashed"
-              buttonVariant="outlined"
-              buttonTitle="Racer Crashed"
-              saveRace={() => endRace("crashed")}
-            />
+            <Button
+              fullWidth
+              size="large"
+              variant="outlined"
+              onClick={() => endRace("crashed")}
+            >
+              Racer Crashed
+            </Button>
           </Grid>
           <Grid item xs={12}>
-            <EndRaceDialog
-              raceStatus="completed"
-              buttonVariant="contained"
-              buttonColor="primary"
-              buttonTitle="Course Completed"
-              saveRace={() => endRace("completed")}
-            />
+            <Button
+              fullWidth
+              size="large"
+              variant="contained"
+              color="primary"
+              onClick={() => endRace("completed")}
+            >
+              Course Completed
+            </Button>
           </Grid>
         </Grid>
       )}
