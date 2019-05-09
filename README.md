@@ -19,3 +19,11 @@ Sebulba uses quarkus which means you need these prereqs to build:
 ## For docker container (slim, small, and fast)
 
 ./mvnw package -Pnative -Dnative-image.docker-build=true 
+
+## UI Dev
+
+To run the UI, head into the `ui` folder and follow the directions
+
+## UI Production Build
+
+To build the UI for production, run `npm run build` in the `ui` directory, a production optomized version of the UI will be placed in the right directory for the quarkus app to serve it.

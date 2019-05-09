@@ -1,0 +1,16 @@
+{
+  "short_name": "Sebulba",
+  "name": "Sebulba, DataStax Accelerate 2019",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "theme_color": "#f8f9f7",
+  "background_color": "#11262B"
+}
