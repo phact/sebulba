@@ -11,12 +11,13 @@ const useStyles = makeStyles(theme => ({
   },
   graph: {
     flexGrow: 1,
-    maxHeight: "100vh",
+    maxHeight: "100vh"
     // add some subtle animation
-    animation: "graph-motion 30s linear infinite"
+    // animation: "graph-motion 30s linear infinite"
   },
   listContainer: {
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
+    paddingRight: 0
   },
   brand: {
     position: "fixed",
@@ -41,6 +42,7 @@ const LeaderBoard = () => {
       </Grid>
       <img
         className={classes.brand}
+        alt="DataStax Logo"
         src={require("../assets/images/datastax-logo-inverted.png")}
       />
     </React.Fragment>

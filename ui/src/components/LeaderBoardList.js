@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     })
   },
   leaderGrow: {
-    transform: "scale(1.2)",
+    transform: "scale(1.15)",
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[1]
   }
@@ -46,6 +46,14 @@ const leaders = _(graphData)
 const LeaderBoardList = () => {
   const classes = useStyles();
   const [selectedLeader, setSelectedLeader] = React.useState();
+
+  // setup and start the animation loop
+  React.useEffect(() => {
+    setInterval(() => {
+      const newLeader = _.sample(leaders);
+      setSelectedLeader(newLeader.data.id);
+    }, 10000);
+  }, []); // run once!
 
   return (
     <List
@@ -77,6 +85,7 @@ const LeaderBoardList = () => {
           <ListItemText
             primary={leader.data.name}
             primaryTypographyProps={{ noWrap: true, display: "block" }}
+            secondaryTypographyProps={{ component: "div" }}
             secondary={
               <React.Fragment>
                 <Typography display="block" variant="body2" noWrap>

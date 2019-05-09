@@ -3,7 +3,7 @@ import _ from "lodash";
 
 const numPeople = 50;
 const numSessions = 20;
-const numDrones = 2;
+//const numDrones = 2;
 const numCompanies = 10;
 const numFlights = 80;
 const numTopics = 8;
@@ -151,7 +151,7 @@ people.forEach((person, index) => {
 for (var i = numPeople; i < numFlights; i++) {
   flewEdges.push({
     group: "edges",
-    classes: "fewEdges",
+    classes: "flewEdges",
     data: {
       label: "",
       id: faker.random.uuid(),

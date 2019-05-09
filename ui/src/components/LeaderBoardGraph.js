@@ -5,22 +5,11 @@ import { graphData } from "../mockData";
 import euler from "cytoscape-euler";
 import fcose from "cytoscape-fcose";
 import stylesheet from "../assets/graph.stylesheet";
-import { leaderBoardGraphReady } from "../assets/graph.leaderboard";
+import { graph, leaderBoardGraphReady } from "../assets/graph.leaderboard";
 
 // register layouts
 Cytoscape.use(euler);
 Cytoscape.use(fcose);
-
-// setup the graph object
-const graph = {
-  id: "cy",
-  motionBlur: true,
-  layout: {
-    name: "grid"
-  },
-  stylesheet: stylesheet,
-  elements: graphData
-};
 
 const LeaderBoardGraph = () => {
   //TODO: setup a timer that cycles through the leaders
@@ -29,6 +18,8 @@ const LeaderBoardGraph = () => {
   return (
     <CytoscapeComponent
       {...graph}
+      stylesheet={stylesheet}
+      elements={graphData}
       cy={leaderBoardGraphReady}
       style={{ width: "100%", height: "100%" }}
     />
