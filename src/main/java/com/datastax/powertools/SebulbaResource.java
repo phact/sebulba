@@ -49,7 +49,7 @@ public class SebulbaResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/setup/{racerId}")
     public String setupRace(@PathParam("racerId") String racerName) {
-        UUID event_uuid = UUIDs.timeBased();
+        UUID event_id = UUIDs.timeBased();
         String event_type = "register";
         long eventTime= new Date().getTime();
 
@@ -58,7 +58,7 @@ public class SebulbaResource {
         PreparedStatement insertEvent = stmts.getInsertEvent();
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
-                .setUUID("event_uuid", event_uuid)
+                .setUUID("event_id", event_id)
                 .setString("event_type", event_type)
                 .setLong("event_time", eventTime);
         session.execute(query);
@@ -70,7 +70,7 @@ public class SebulbaResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stop/")
     public String stopRace() {
-        UUID event_uuid = UUIDs.timeBased();
+        UUID event_id = UUIDs.timeBased();
         UUID race_id = UUIDs.timeBased();
         String event_type = "stop";
 
@@ -80,9 +80,9 @@ public class SebulbaResource {
         //"(id, racer_id , duration ,start_time, end_time , alt_avg , bat_avg , cam_avg , mode_avg , spd_avg , temp_height_avg , wifi_avg ) " +
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
-                .setUUID("event_uuid", event_uuid)
+                .setUUID("event_id", event_id)
                 .setString("event_type", event_type)
-                .setLong("end_time", new Date().getTime());
+                .setLong("event_time", endTime);
 
         session.execute(query);
 
@@ -104,7 +104,7 @@ public class SebulbaResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/fail/")
     public String failRace() {
-        UUID event_uuid = UUIDs.timeBased();
+        UUID event_id = UUIDs.timeBased();
         UUID race_id = UUIDs.timeBased();
         String event_type = "fail";
 
@@ -114,9 +114,9 @@ public class SebulbaResource {
         //"(id, racer_id , duration ,start_time, end_time , alt_avg , bat_avg , cam_avg , mode_avg , spd_avg , temp_height_avg , wifi_avg ) " +
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
-                .setUUID("event_uuid", event_uuid)
+                .setUUID("event_id", event_id)
                 .setString("event_type", event_type)
-                .setLong("end_time", new Date().getTime());
+                .setLong("event_time", endTime);
 
         session.execute(query);
 
@@ -142,7 +142,7 @@ public class SebulbaResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/start/")
     public String startRace() {
-        UUID event_uuid = UUIDs.timeBased();
+        UUID event_id = UUIDs.timeBased();
         String event_type = "start";
 
         startTime = new Date().getTime();
@@ -150,9 +150,9 @@ public class SebulbaResource {
         PreparedStatement insertEvent = stmts.getInsertEvent();
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
-                .setUUID("event_uuid", event_uuid)
+                .setUUID("event_id", event_id)
                 .setString("event_type", event_type)
-                .setLong("start_time", startTime);
+                .setLong("event_time", startTime);
         session.execute(query);
 
         return service.confirmation(racerName);
@@ -164,15 +164,13 @@ public class SebulbaResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/event/")
     public Event insertEvent(Event event) {
-        UUID event_uuid = UUIDs.timeBased();
+        UUID event_id = UUIDs.timeBased();
         String event_type = "payload";
 
         PreparedStatement insertEvent = stmts.getInsertEvent();
-        //"(id, event_id, event_uuid, event_type, start_time, end_time, alt, bat, cam, mode, spd, temp_height, wifi) " +
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
-                .setLong("event_id", event.getEventId())
-                .setUUID("event_uuid", event_uuid)
+                .setUUID("event_id", event_id)
                 .setString("event_type", event_type)
                 .setLong("event_time", new Date().getTime())
                 .setLong("alt", event.getAlt())
@@ -192,7 +190,7 @@ public class SebulbaResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/position/")
     public DronePosition insertPosition(DronePosition position) {
-        UUID event_uuid = UUIDs.timeBased();
+        UUID event_id = UUIDs.timeBased();
         String event_type = "payload";
 
         //"(mvo_vel_x,mvo_vel_y,mvo_vel_z,mvo.pos_x,mvo.pos_y,mvo_pos_z,imu_acc_x,imu_acc_y,imu_acc_z,

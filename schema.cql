@@ -3,8 +3,7 @@ create KEYSPACE sebulba WITH replication = {'class': 'SimpleStrategy', 'replicat
 create TABLE sebulba.events_by_racer
 (
     id text,
-    event_id bigint,
-    event_uuid timeuuid,
+    event_id timeuuid,
     event_type text,
     event_time bigint,
     alt bigint,
@@ -14,7 +13,7 @@ create TABLE sebulba.events_by_racer
     spd bigint,
     temp_height bigint,
     wifi bigint,
-    PRIMARY KEY ( id, event_time, event_uuid)
+    PRIMARY KEY ( id, event_time, event_id)
 )
 WITH CLUSTERING ORDER BY ( event_time desc)
 ;
