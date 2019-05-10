@@ -51,6 +51,7 @@ public class SebulbaResource {
     public String setupRace(@PathParam("racerId") String racerName) {
         UUID event_uuid = UUIDs.timeBased();
         String event_type = "register";
+        long eventTime= new Date().getTime();
 
         this.racerName = racerName;
 
@@ -58,7 +59,8 @@ public class SebulbaResource {
         BoundStatement query = insertEvent.bind()
                 .setString("id", racerName)
                 .setUUID("event_uuid", event_uuid)
-                .setString("event_type", event_type);
+                .setString("event_type", event_type)
+                .setLong("event_time", eventTime);
         session.execute(query);
 
         return service.confirmation(racerName);
@@ -172,6 +174,7 @@ public class SebulbaResource {
                 .setLong("event_id", event.getEventId())
                 .setUUID("event_uuid", event_uuid)
                 .setString("event_type", event_type)
+                .setLong("event_time", new Date().getTime())
                 .setLong("alt", event.getAlt())
                 .setLong("bat", event.getBat())
                 .setLong("cam", event.getCam())

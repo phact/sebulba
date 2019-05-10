@@ -9,6 +9,7 @@
     "axios": "^0.18.0",
     "bluebird": "^3.5.4",
     "clsx": "^1.0.4",
+    "cross-env": "^5.2.0",
     "cytoscape": "^3.5.5",
     "cytoscape-euler": "^1.2.1",
     "cytoscape-fcose": "^1.0.0",
@@ -29,6 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "watch": "cra-build-watch -b ../src/main/resources/META-INF/resources/",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "postbuild": "cp -Rv build/* ../src/main/resources/META-INF/resources/"
@@ -47,5 +49,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cra-build-watch": "^1.4.1",
+    "webpack-cli": "^3.3.2"
   }
 }

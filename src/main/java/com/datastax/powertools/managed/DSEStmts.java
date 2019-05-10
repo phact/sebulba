@@ -43,7 +43,7 @@ public class DSEStmts {
 
         private void prepareStatements() {
             String statement = "INSERT INTO sebulba.events_by_racer " +
-                    "(id, event_id, event_uuid, event_type, start_time, end_time, alt, bat, cam, mode, spd, temp_height, wifi) " +
+                    "(id, event_id, event_uuid, event_type, event_time, alt, bat, cam, mode, spd, temp_height, wifi) " +
                     "VALUES " +
                     "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             insertEvent = prepare(statement);

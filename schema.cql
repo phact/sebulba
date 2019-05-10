@@ -6,8 +6,7 @@ create TABLE sebulba.events_by_racer
     event_id bigint,
     event_uuid timeuuid,
     event_type text,
-    start_time bigint,
-    end_time bigint,
+    event_time bigint,
     alt bigint,
     bat bigint,
     cam bigint,
@@ -15,9 +14,9 @@ create TABLE sebulba.events_by_racer
     spd bigint,
     temp_height bigint,
     wifi bigint,
-    PRIMARY KEY ( id, start_time, event_uuid)
+    PRIMARY KEY ( id, event_time, event_uuid)
 )
-WITH CLUSTERING ORDER BY ( start_time desc)
+WITH CLUSTERING ORDER BY ( event_time desc)
 ;
 
 create Table sebulba.position_by_racer

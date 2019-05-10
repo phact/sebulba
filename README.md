@@ -1,4 +1,4 @@
-# Sebubla
+# Sebulba
 
 A drone race coordinator built on DSE for DataStax Accelerate
 

@@ -14,3 +14,5 @@ src/main/resources/META-INF/resources/service-worker.js
 src/main/resources/META-INF/resources/index.html
 src/main/resources/META-INF/resources/static/                                              
 src/main/resources/META-INF/resources/manifest.json  
+src/main/resources/META-INF/resources/js/
+src/main/resources/META-INF/resources/media/
