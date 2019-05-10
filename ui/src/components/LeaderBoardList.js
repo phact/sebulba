@@ -6,8 +6,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
-import { graphData } from "../mockData";
-import _ from "lodash";
 import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -38,23 +36,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const leaders = _(graphData)
-  .filter(["data.nodeType", "person"])
-  .sampleSize(7)
-  .value();
-
-const LeaderBoardList = () => {
+const LeaderBoardList = ({ currentLeaderId, leaders }) => {
   const classes = useStyles();
-  const [selectedLeader, setSelectedLeader] = React.useState();
-
-  // setup and start the animation loop
-  React.useEffect(() => {
-    setInterval(() => {
-      const newLeader = _.sample(leaders);
-      setSelectedLeader(newLeader.data.id);
-    }, 10000);
-  }, []); // run once!
-
   return (
     <List
       subheader={
@@ -67,9 +50,8 @@ const LeaderBoardList = () => {
       {leaders.map((leader, index) => (
         <ListItem
           key={index}
-          onClick={() => setSelectedLeader(leader.data.id)}
           className={clsx(classes.leader, {
-            [classes.leaderGrow]: selectedLeader === leader.data.id
+            [classes.leaderGrow]: currentLeaderId === leader.data.id
           })}
         >
           <ListItemAvatar>

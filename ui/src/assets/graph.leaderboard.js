@@ -1,12 +1,46 @@
-import _ from "lodash";
-import * as Promise from "bluebird";
-
 // setup the basics
 let selectedNeighborhood = null;
 let unselectedNodes = null;
+let initialized = false;
 const animationDuration = 500;
 const easing = "ease-in-out";
 const layoutPadding = 20;
+
+const getNodeLabel = data => {
+  const labelData = {
+    type: data.nodeType,
+    primary: null,
+    secondary: null
+  };
+  switch (data.nodeType) {
+    case "person":
+      labelData.primary = data.name;
+      labelData.secondary = data.company;
+      break;
+    case "session":
+      labelData.secondary = data.name;
+      break;
+    case "flight":
+      labelData.secondary = data.duration;
+      break;
+    case "topic":
+      labelData.secondary = data.name;
+      break;
+    default:
+      break;
+  }
+  let label =
+    '<div class="graph-label"><p class="label-type">' + data.nodeType + "</p>";
+  if (labelData.primary) {
+    label = label + '<p class="label-primary">' + labelData.primary + "</p>";
+  }
+  if (labelData.secondary) {
+    label =
+      label + '<p class="label-secondary">' + labelData.secondary + "</p>";
+  }
+  label += "</div>";
+  return label;
+};
 
 // fade cy elements in
 const fadeElementsIn = elements => {
@@ -50,7 +84,6 @@ const clear = cy => {
     });
     // reset module globals
     selectedNeighborhood = unselectedNodes = null;
-    return Promise.delay(animationDuration);
   };
 
   const restorePositions = function() {
@@ -71,6 +104,8 @@ const clear = cy => {
   };
 
   const resetHighlight = () => {
+    // remove all labels
+    document.getElementById("cy").firstChild.lastChild.remove();
     selectedNeighborhood.removeClass("highlighted");
   };
 
@@ -91,7 +126,7 @@ const highlightPerson = (node, cy) => {
     selectedNeighborhood.addClass("highlighted");
     const originalPosition = node.data("orgPos");
     const layout = selectedNeighborhood.makeLayout({
-      name: "euler",
+      name: "concentric",
       fit: false,
       animate: true,
       animationDuration: animationDuration,
@@ -103,7 +138,17 @@ const highlightPerson = (node, cy) => {
         y2: originalPosition.y + 1
       },
       avoidOverlap: true,
-      padding: layoutPadding
+      padding: layoutPadding,
+      concentric: function(ele) {
+        if (ele.same(node)) {
+          return 2;
+        } else {
+          return 1;
+        }
+      },
+      levelWidth: function() {
+        return 1;
+      }
     });
 
     const layoutPromise = cy.promiseOn("layoutstop");
@@ -114,13 +159,21 @@ const highlightPerson = (node, cy) => {
   // run the highlight animation
   layoutNeighborhood().then(() => {
     fitToElements(cy, selectedNeighborhood);
+    // add labels to nodes
+    cy.nodeHtmlLabel([
+      {
+        query: "node.highlighted",
+        valign: "bottom",
+        valignBox: "bottom",
+        tpl: getNodeLabel
+      }
+    ]);
   });
 };
 
 // run the initial layout after the data in the graph is updated
 const initialLayout = cy => {
   const layout = cy.layout(fcoseLayoutConfig);
-
   // when the layout is complete, iterate over the notes and set their original
   // position so that animations can reset
   layout.pon("layoutstop").then(event => {
@@ -146,13 +199,30 @@ export const graph = {
 };
 
 // work with the cy graph when ready
-export const leaderBoardGraphReady = cy => {
+export const leaderBoardGraphReady = (cy, currentLeaderId) => {
+  // if a current leader is selected, select it
+  if (currentLeaderId) {
+    const selectedNode = cy.$("#" + currentLeaderId);
+    highlightPerson(selectedNode, cy);
+  }
+  if (!currentLeaderId && initialized) {
+    // reset the graph on empty leaders
+    clear(cy);
+  }
+
+  // we don't need to re-initialize on renders
+  if (initialized) {
+    return false;
+  }
+  initialized = true;
+
   // when the graph is ready, add the main event listener
   cy.ready(e => {
     // initialize the layout after a delay
     setTimeout(() => {
       initialLayout(cy);
     }, 1000);
+
     cy.on("select unselect", "node", e => {
       const selectedNode = cy.$("node:selected");
       if (selectedNode.nonempty()) {
@@ -169,6 +239,7 @@ export const leaderBoardGraphReady = cy => {
 const fcoseLayoutConfig = {
   name: "fcose",
   nodeSeparation: 75,
+  nodeDimensionsIncludeLabels: true,
   animate: true,
   animationDuration: 2200,
   animationEasing: easing,

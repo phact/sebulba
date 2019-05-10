@@ -2,22 +2,23 @@ import { createStore } from "redux";
 
 // setup actions
 export const actions = {
-  myAction: () => ({
-    type: "MY_ACTION"
+  myAction: leaderId => ({
+    type: "SET_HIGHLIGHTED_LEADER",
+    payload: leaderId
   })
 };
 
 // setup a reducer
 const initialState = {
-  myValue: false
+  highlightedLeader: null
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "MY_ACTION":
+    case "SET_HIGHLIGHTED_LEADER":
       return {
         ...state,
-        myValue: !state.myValue
+        highlightedLeader: action.payload
       };
     default:
       return state;
