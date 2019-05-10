@@ -3,7 +3,7 @@ import _ from "lodash";
 
 const numPeople = 50;
 const numSessions = 20;
-const numDrones = 2;
+//const numDrones = 2;
 const numCompanies = 10;
 const numFlights = 80;
 const numTopics = 8;
@@ -107,7 +107,7 @@ people.forEach(person => {
         group: "edges",
         classes: "worksWithEdge",
         data: {
-          label: "",
+          label: "works with",
           id: faker.random.uuid(),
           source: person.data.id,
           target: coWorker.data.id
@@ -124,7 +124,7 @@ flights.forEach(flight => {
     group: "edges",
     classes: "flownEdges",
     data: {
-      label: "",
+      label: "flown by",
       id: faker.random.uuid(),
       source: flight.data.id,
       target: _.sample(drones).data.id
@@ -139,7 +139,7 @@ people.forEach((person, index) => {
     group: "edges",
     classes: "flewEdges",
     data: {
-      label: "",
+      label: "flew",
       id: faker.random.uuid(),
       source: person.data.id,
       target: flights[index].data.id
@@ -151,9 +151,9 @@ people.forEach((person, index) => {
 for (var i = numPeople; i < numFlights; i++) {
   flewEdges.push({
     group: "edges",
-    classes: "fewEdges",
+    classes: "flewEdges",
     data: {
-      label: "",
+      label: "flew",
       id: faker.random.uuid(),
       source: _.sample(people).data.id,
       target: flights[i].data.id
@@ -170,7 +170,7 @@ people.forEach(person => {
       classes: "attendedEdges",
       group: "edges",
       data: {
-        label: "",
+        label: "attended",
         id: faker.random.uuid(),
         source: person.data.id,
         target: session.data.id
@@ -188,7 +188,7 @@ people.forEach(person => {
       classes: "interestedEdges",
       group: "edges",
       data: {
-        label: "",
+        label: "interested in",
         id: faker.random.uuid(),
         source: person.data.id,
         target: topic.data.id

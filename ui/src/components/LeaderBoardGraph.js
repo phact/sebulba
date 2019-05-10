@@ -1,35 +1,26 @@
 import React from "react";
 import CytoscapeComponent from "react-cytoscapejs";
 import Cytoscape from "cytoscape";
-import { graphData } from "../mockData";
 import euler from "cytoscape-euler";
 import fcose from "cytoscape-fcose";
+import nodeHtmlLabel from "cytoscape-node-html-label";
 import stylesheet from "../assets/graph.stylesheet";
-import { leaderBoardGraphReady } from "../assets/graph.leaderboard";
+import { graph, leaderBoardGraphReady } from "../assets/graph.leaderboard";
 
 // register layouts
 Cytoscape.use(euler);
 Cytoscape.use(fcose);
+nodeHtmlLabel(Cytoscape);
 
-// setup the graph object
-const graph = {
-  id: "cy",
-  motionBlur: true,
-  layout: {
-    name: "grid"
-  },
-  stylesheet: stylesheet,
-  elements: graphData
-};
-
-const LeaderBoardGraph = () => {
-  //TODO: setup a timer that cycles through the leaders
-  //TODO: select the leaders node and isolate their neighborhood
-  //TODO: add new data to the graph when the race is complete
+const LeaderBoardGraph = ({ graphData, currentLeaderId }) => {
   return (
     <CytoscapeComponent
       {...graph}
-      cy={leaderBoardGraphReady}
+      stylesheet={stylesheet}
+      elements={graphData}
+      cy={cy => {
+        leaderBoardGraphReady(cy, currentLeaderId);
+      }}
       style={{ width: "100%", height: "100%" }}
     />
   );

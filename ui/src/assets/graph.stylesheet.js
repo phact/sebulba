@@ -10,7 +10,6 @@ export default [
       "background-color": "#2B65EC"
     }
   },
-
   {
     selector: "edge",
     style: {
@@ -18,6 +17,44 @@ export default [
       opacity: 0.6,
       "line-color": theme.palette.background.paper,
       events: "no"
+    }
+  },
+  {
+    selector: "node.highlighted",
+    style: {
+      "min-zoomed-font-size": 0,
+      "z-index": 9999
+    }
+  },
+  {
+    selector: "edge.highlighted",
+    style: {
+      opacity: 0.8,
+      width: 6,
+      "z-index": 9999
+    }
+  },
+  {
+    selector: "node:selected",
+    style: {
+      width: 40,
+      height: 40,
+      "border-color": "rgb(187, 219, 247)",
+      "border-opacity": 0.5,
+      "border-width": 10
+    }
+  },
+  {
+    selector: "edge[label].highlighted",
+    style: {
+      label: "data(label)",
+      "font-size": 4,
+      "font-family": ["Roboto"],
+      "font-weight": 300,
+      "edge-text-rotation": "autorotate",
+      color: "#f8f9f7",
+      "text-outline-color": "#374c51",
+      "text-outline-width": 1
     }
   },
   {
@@ -48,55 +85,6 @@ export default [
     selector: 'node[nodeType = "topic"]',
     style: {
       "background-color": theme.palette.skyBlue
-    }
-  },
-  {
-    selector: "node.highlighted",
-    style: {
-      "min-zoomed-font-size": 0,
-      "z-index": 9999
-    }
-  },
-  {
-    selector: "edge.highlighted",
-    style: {
-      opacity: 0.8,
-      width: 4,
-      "z-index": 9999
-    }
-  },
-  {
-    selector: ".faded",
-    style: {
-      events: "no"
-    }
-  },
-  {
-    selector: "node.faded",
-    style: {
-      opacity: 0.08
-    }
-  },
-  {
-    selector: "edge.faded",
-    style: {
-      opacity: 0.06
-    }
-  },
-  {
-    selector: ".hidden",
-    style: {
-      display: "none"
-    }
-  },
-  {
-    selector: "node:selected",
-    style: {
-      width: 40,
-      height: 40,
-      "border-color": "rgb(187, 219, 247)",
-      "border-opacity": 0.5,
-      "border-width": 10
     }
   }
 ];

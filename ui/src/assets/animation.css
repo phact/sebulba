@@ -11,3 +11,28 @@
     transform: rotateY(10deg) rotateX(-10deg) rotateZ(2deg);
   }
 }
+
+.graph-label {
+  opacity: 0.85;
+  padding: 4px;
+  background: #374c51;
+  max-width: 80px;
+}
+
+.graph-label p {
+  margin: 0;
+  padding: 0;
+}
+
+.label-type {
+  font-size: 3px;
+}
+
+.label-primary {
+  font-size: 5px;
+  font-weight: bold;
+}
+
+.label-secondary {
+  font-size: 4px;
+}

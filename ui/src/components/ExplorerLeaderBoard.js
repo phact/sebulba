@@ -8,7 +8,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  root: {}
+}));
 
 const ExplorerLeaderBoard = () => {
   const classes = useStyles();
@@ -17,7 +19,7 @@ const ExplorerLeaderBoard = () => {
       <Typography variant="h5" display="block" gutterBottom>
         Current Leader Board
       </Typography>
-      <Table>
+      <Table className={classes.root}>
         <TableHead>
           <TableRow>
             <TableCell>Event Id</TableCell>
