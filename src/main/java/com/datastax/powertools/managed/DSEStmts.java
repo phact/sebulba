@@ -27,6 +27,12 @@ public class DSEStmts {
         private PreparedStatement insertEvent;
         private PreparedStatement insertPosition;
         private PreparedStatement insertRaceSummary;
+        private PreparedStatement insertFlight;
+        private PreparedStatement insertFlightEvents;
+        private PreparedStatement insertFlightTelematics;
+        private PreparedStatement insertPersonFlewInFlight;
+        private PreparedStatement insertEventsIncludedInFlight;
+        private PreparedStatement insertTelematicsIncludedInFlight;
 
         public Prepared(Session session, String keyspace, String replicationStrategy) {
             this.keyspace = keyspace;
@@ -58,6 +64,41 @@ public class DSEStmts {
                     "(?,?,?,?,?,?,?,?,?,?,?,?)";
             insertRaceSummary = prepare(statement);
 
+            statement = "INSERT INTO sebulba.flight " +
+                    "(flight_id, duration, end_time, race_status, racer_id, start_time)" +
+                    "VALUES " +
+                    "(:flight_id, :duration, :end_time, :race_status, :racer_id, :start_time)";
+            insertFlight = prepare(statement);
+
+            statement = "INSERT INTO sebulba.flight_events " +
+                        "(flight_id, start_time, event_uuid, alt, bat, cam, end_time, event_type, mode, race_status, spd, temp_height, wifi)" +
+                        "VALUES " +
+                        "(:flight_id, :start_time, :event_uuid, :alt, :bat, :cam, :end_time, :event_type, :mode, :race_status, :spd, :temp_height, :wifi)";
+            insertFlightEvents = prepare(statement);
+
+            statement = "INSERT INTO sebulba.flight_telematics" +
+                        "(flight_id, time, imu_acc_x, imu_acc_y, imu_acc_z, imu_gyro_x, imu_gyro_y, imu_gyro_z, imu_q0, imu_q1, imu_q2, imu_q3, imu_vg_x, imu_vg_y, imu_vg_z, mvo_pos_x, mvo_pos_y, mvo_pos_z, mvo_vel_x, mvo_vel_y, mvo_vel_z)" +
+                        "VALUES " +
+                        "(:flight_id, :time, :imu_acc_x, :imu_acc_y, :imu_acc_z, :imu_gyro_x, :imu_gyro_y, :imu_gyro_z, :imu_q0, :imu_q1, :imu_q2, :imu_q3, :imu_vg_x, :imu_vg_y, :imu_vg_z, :mvo_pos_x, :mvo_pos_y, :mvo_pos_z, :mvo_vel_x, :mvo_vel_y, :mvo_vel_z)";
+            insertFlightTelematics = prepare(statement);
+
+            statement = "INSERT INTO sebulba.person__flew_in__flight" +
+                        "(person_attendee_id, flight_flight_id)" +
+                        "VALUES " +
+                        "(:person_attendee_id, :flight_flight_id)";
+            insertPersonFlewInFlight = prepare(statement);
+
+            statement = "INSERT INTO sebulba.flight_events__included_in__flight" +
+                        "(flight_events_flight_id, flight_events_start_time, flight_events_event_uuid, flight_flight_id)" +
+                        "VALUES " +
+                        "(:flight_events_flight_id, :flight_events_start_time, :flight_events_event_uuid, :flight_flight_id)";
+            insertEventsIncludedInFlight = prepare(statement);
+
+            statement = "INSERT INTO sebulba.flight_telematics__included_in__flight" +
+                        "(flight_telematics_flight_id, flight_telematics_time, flight_flight_id)" +
+                        "VALUES " +
+                        "(:flight_telematics_flight_id, :flight_telematics_time, :flight_flight_id)";
+            insertTelematicsIncludedInFlight = prepare(statement);
         }
 
         public PreparedStatement prepare(String stmt) {
@@ -84,6 +125,36 @@ public class DSEStmts {
         }
         public PreparedStatement getInsertRaceSummary() {
             return insertRaceSummary;
+        }
+
+        public PreparedStatement getInsertFlight()
+        {
+            return insertFlight;
+        }
+
+        public PreparedStatement getInsertFlightEvents()
+        {
+            return insertFlightEvents;
+        }
+
+        public PreparedStatement getInsertFlightTelematics()
+        {
+            return insertFlightTelematics;
+        }
+
+        public PreparedStatement getInsertPersonFlewInFlight()
+        {
+            return insertPersonFlewInFlight;
+        }
+
+        public PreparedStatement getInsertEventsIncludedInFlight()
+        {
+            return insertEventsIncludedInFlight;
+        }
+
+        public PreparedStatement getInsertTelematicsIncludedInFlight()
+        {
+            return insertTelematicsIncludedInFlight;
         }
     }
 }
