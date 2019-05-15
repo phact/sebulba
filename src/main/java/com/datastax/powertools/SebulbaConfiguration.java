@@ -27,6 +27,8 @@ public class SebulbaConfiguration {
     String keyspaceName;
     @ConfigProperty(name = "dse.replicationStrategy", defaultValue ="{'class': 'SimpleStrategy', 'replication_factor': 1 }")
     String replicationStrategy;
+    @ConfigProperty(name = "dse.graphName", defaultValue ="sebulba")
+    private String graphName;
 
     public String getContactPoints() {
         return contactPoints;
@@ -52,4 +54,7 @@ public class SebulbaConfiguration {
         return replicationStrategy;
     }
 
+    public String getGraphName() {
+        return graphName;
+    }
 }

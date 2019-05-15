@@ -10,6 +10,7 @@ package com.datastax.powertools.managed;
 import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import com.datastax.driver.dse.DseCluster;
 import com.datastax.driver.dse.DseSession;
+import com.datastax.driver.dse.graph.GraphOptions;
 import com.datastax.powertools.SebulbaConfiguration;
 import org.jboss.logging.Logger;
 
@@ -24,16 +25,18 @@ public class DSEManager {
     private String[] contactPoints;
     private DseCluster cluster;
     private DSEStmts.Prepared stmts;
-
-    public DseSession getSession() {
-        return session;
-    }
+    private String graphName;
 
     private DseSession session;
     private String username;
     private String password;
     private String keyspaceName;
     private String replicationStrategy;
+
+    public DseSession getSession() {
+        return session;
+    }
+
 
     public void configure(SebulbaConfiguration config) {
         contactPoints = config.getContactPoints().split(",");
@@ -42,6 +45,7 @@ public class DSEManager {
         password = config.getCqlPassword();
         keyspaceName = config.getKeyspaceName();
         replicationStrategy= config.getReplicationStrategy();
+        graphName= config.getGraphName();
     }
 
     public void start() {
@@ -49,6 +53,7 @@ public class DSEManager {
                 addContactPoints(contactPoints).
                 withPort(cqlPort).
                 withCredentials(username, password).
+                withGraphOptions(new GraphOptions().setGraphName(graphName)).
                 withoutJMXReporting();
 
         password = null; // defensive
@@ -65,5 +70,9 @@ public class DSEManager {
 
     public DSEStmts.Prepared getStmts() {
         return stmts;
+    }
+
+    public void setGraphName(String graphName) {
+        this.graphName = graphName;
     }
 }

@@ -41,7 +41,12 @@
     <dependency>
       <groupId>com.datastax.dse</groupId>
       <artifactId>dse-java-driver-core</artifactId>
-      <version>1.7.0</version>
+      <version>1.8.1.20190510-LABS</version>
+    </dependency>
+    <dependency>
+      <groupId>com.datastax.dse</groupId>
+      <artifactId>dse-java-driver-graph</artifactId>
+      <version>1.8.1.20190510-LABS</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

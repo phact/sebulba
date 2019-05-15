@@ -4,17 +4,28 @@ import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.utils.UUIDs;
 import com.datastax.driver.dse.DseSession;
+import com.datastax.driver.dse.graph.GraphNode;
+import com.datastax.driver.dse.graph.GraphResultSet;
+import com.datastax.driver.dse.graph.GraphStatement;
+import com.datastax.dse.graph.api.DseGraph;
 import com.datastax.powertools.api.DronePosition;
 import com.datastax.powertools.api.Event;
+import com.datastax.powertools.api.GraphRepresentation;
 import com.datastax.powertools.managed.DSEManager;
 import com.datastax.powertools.managed.DSEStmts;
+import org.apache.tinkerpop.gremlin.process.traversal.P;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
+
+import static org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
 
 @Path("/sebulba")
 public class SebulbaResource {
@@ -252,6 +263,80 @@ public class SebulbaResource {
         session.execute(query);
 
         return position;
+    }
+
+
+    @GET
+    @Path("/graph")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getGraph() {
+        try {
+            GraphTraversalSource g = DseGraph.traversal();
+            GraphTraversal traversal = g.V().outE();
+
+            GraphStatement graphStatement = DseGraph.statementFromTraversal(traversal);
+
+            GraphResultSet output = session.executeGraph(graphStatement);
+
+            List<GraphNode> nodes = output.all();
+
+            return nodes.toString();
+
+        }catch (Exception e){
+            System.out.println(e.toString());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    @GET
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<GraphRepresentation.VertexRepresentation> getList(
+            @QueryParam("vertexLabel") String vertexLabel,
+            @QueryParam("vertexId") String vertexId,
+            @QueryParam("property") String property,
+            @QueryParam("count") int count,
+            @QueryParam("max") int max,
+            @QueryParam("min") int min) {
+        GraphTraversalSource g = DseGraph.traversal(session);
+
+        List<Vertex> vertices = g.V().hasLabel(vertexLabel).has(property, P.between(min, max)).limit(count).order().by(property, decr).toList();
+        for (Vertex vertex : vertices) {
+            GraphRepresentation.VertexRepresentation vertexR = new GraphRepresentation.VertexRepresentation();
+            vertexR.setLabel(vertex.label());
+            vertexR.setLabel(vertex.label());
+        }
+
+        List<GraphRepresentation.VertexRepresentation> vertexList = vertexListToGraphRepresentation(vertices);
+        return vertexList;
+    }
+
+    private List<GraphRepresentation.VertexRepresentation> vertexListToGraphRepresentation(List<Vertex> vertices) {
+        List<GraphRepresentation.VertexRepresentation> vertexList = new ArrayList();
+        for (Vertex vertex : vertices) {
+            GraphRepresentation.VertexRepresentation vertexR = new GraphRepresentation.VertexRepresentation();
+            vertexR.setLabel(vertex.label());
+            LinkedHashMap<String, String> complexId = (LinkedHashMap) vertex.id();
+            for (Map.Entry<String, String> entry : complexId.entrySet()) {
+                if (entry.getKey().equals("~label")){
+                    vertexR.setLabel(entry.getValue());
+                }else {
+                    vertexR.setId(entry.getValue());
+                }
+            }
+
+            Map<String, Object> properties = new HashMap<>();
+            for (Iterator<VertexProperty<Object>> it = vertex.properties(); it.hasNext(); ) {
+                VertexProperty property = it.next();
+                properties.put(property.label(), property.value());
+            }
+            vertexR.setProperties(properties);
+            vertexList.add(vertexR);
+        }
+        return vertexList;
+
     }
 
 
