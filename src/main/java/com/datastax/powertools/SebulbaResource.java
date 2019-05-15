@@ -37,6 +37,9 @@ public class SebulbaResource {
     @SessionScoped
     private long startTime;
 
+    @SessionScoped
+    private String currentFlight = "unknown";
+
     @Inject
     void setup() {
         dseManager.configure(config);
@@ -52,6 +55,7 @@ public class SebulbaResource {
         UUID event_id = UUIDs.timeBased();
         String event_type = "register";
         long eventTime= new Date().getTime();
+        currentFlight = "";
 
         this.racerName = racerName;
 
@@ -71,7 +75,6 @@ public class SebulbaResource {
     @Path("/stop/")
     public String stopRace() {
         UUID event_id = UUIDs.timeBased();
-        UUID race_id = UUIDs.timeBased();
         String event_type = "stop";
 
         long endTime= new Date().getTime();
@@ -88,7 +91,7 @@ public class SebulbaResource {
 
         PreparedStatement insertRaceSummary = stmts.getInsertRaceSummary();
         query = insertRaceSummary.bind()
-                .setString("id", "race-"+race_id.toString())
+                .setString("id", currentFlight)
                 .setString("racer_id", racerName)
                 .setLong("duration", endTime-startTime)
                 .setLong("start_time", startTime)
@@ -96,6 +99,8 @@ public class SebulbaResource {
         //TODO: compute the averages
 
         session.execute(query);
+
+        currentFlight = "";
 
         return service.confirmation(racerName);
     }
@@ -105,7 +110,7 @@ public class SebulbaResource {
     @Path("/fail/")
     public String failRace() {
         UUID event_id = UUIDs.timeBased();
-        UUID race_id = UUIDs.timeBased();
+
         String event_type = "fail";
 
         long endTime= new Date().getTime();
@@ -134,6 +139,8 @@ public class SebulbaResource {
 
         session.execute(query);
 
+        currentFlight = "";
+
         return service.confirmation(racerName);
     }
 
@@ -143,8 +150,9 @@ public class SebulbaResource {
     @Path("/start/")
     public String startRace() {
         UUID event_id = UUIDs.timeBased();
+        UUID race_id = UUIDs.timeBased();
         String event_type = "start";
-
+        currentFlight = "race-"+race_id.toString();
         startTime = new Date().getTime();
 
         PreparedStatement insertEvent = stmts.getInsertEvent();
@@ -153,6 +161,21 @@ public class SebulbaResource {
                 .setUUID("event_id", event_id)
                 .setString("event_type", event_type)
                 .setLong("event_time", startTime);
+        session.execute(query);
+
+        insertEvent = stmts.getInsertFlightEvents();
+        query = insertEvent.bind()
+                .setString("flight_id", currentFlight)
+                .setUUID("event_uuid", event_id)
+                .setString("event_type", event_type)
+                .setLong("start_time", startTime);
+        session.execute(query);
+
+        insertEvent = stmts.getInsertFlight();
+        query = insertEvent.bind()
+                .setString("flight_id", currentFlight)
+                .setString("racer_id", racerName)
+                .setLong("start_time", startTime);
         session.execute(query);
 
         return service.confirmation(racerName);
@@ -180,6 +203,14 @@ public class SebulbaResource {
                 .setLong("spd", event.getSpd())
                 .setLong("temp_height", event.getTempHeight())
                 .setLong("wifi", event.getWifi());
+        session.execute(query);
+
+        insertEvent = stmts.getInsertFlightEvents();
+        query = insertEvent.bind()
+                .setString("flight_id", currentFlight)
+                .setUUID("event_uuid", event_id)
+                .setString("event_type", event_type)
+                .setLong("start_time", startTime);
         session.execute(query);
 
         return event;
