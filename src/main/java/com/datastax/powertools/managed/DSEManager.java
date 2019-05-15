@@ -44,8 +44,8 @@ public class DSEManager {
         username = config.getCqlUserName();
         password = config.getCqlPassword();
         keyspaceName = config.getKeyspaceName();
-        replicationStrategy= config.getReplicationStrategy();
-        graphName= config.getGraphName();
+        replicationStrategy = config.getReplicationStrategy();
+        graphName = config.getGraphName();
     }
 
     public void start() {

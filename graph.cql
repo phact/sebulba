@@ -1,72 +1,5 @@
 CREATE KEYSPACE sebulba WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1'}  AND durable_writes = true AND graph_engine = 'Native';
 
-create TABLE sebulba.events_by_racer
-(
-    id text,
-    event_id timeuuid,
-    event_type text,
-    event_time bigint,
-    alt bigint,
-    bat bigint,
-    cam bigint,
-    mode bigint,
-    spd bigint,
-    temp_height bigint,
-    wifi bigint,
-    PRIMARY KEY ( id, event_time, event_id)
-)
-WITH CLUSTERING ORDER BY ( event_time desc)
-;
-
-create Table sebulba.position_by_racer
-(
-  id text,
-  time bigint,
-  mvo_vel_x double,
-  mvo_vel_y double,
-  mvo_vel_z double,
-  mvo_pos_x double,
-  mvo_pos_y double,
-  mvo_pos_z double,
-  imu_acc_x double,
-  imu_acc_y double,
-  imu_acc_z double,
-  imu_gyro_x double,
-  imu_gyro_y double,
-  imu_gyro_z double,
-  imu_q0 double,
-  imu_q1 double,
-  imu_q2 double,
-  imu_q3 double,
-  imu_vg_x double,
-  imu_vg_y double,
-  imu_vg_z double,
-  PRIMARY KEY (id, time)
-)
-WITH CLUSTERING ORDER BY ( time desc)
-;
-
-create TABLE sebulba.races_by_duration
-(
-    id text,
-    racer_id text,
-	race_status text,
-    duration bigint,
-    start_time bigint,
-    end_time bigint,
-    alt_avg bigint,
-    bat_avg bigint,
-    cam_avg bigint,
-    mode_avg bigint,
-    spd_avg bigint,
-    temp_height_avg bigint,
-    wifi_avg bigint,
-    PRIMARY KEY ( racer_id, duration, id)
-)
-WITH CLUSTERING ORDER BY ( duration desc)
-;
-
-
 CREATE TABLE sebulba.flight (
     flight_id text PRIMARY KEY,
     duration bigint,
@@ -181,8 +114,8 @@ CREATE MATERIALIZED VIEW sebulba.works_with_reversed AS
     SELECT *
     FROM sebulba.person__works_with__person
     WHERE out_attendee_id IS NOT NULL AND in_attendee_id IS NOT NULL
-    PRIMARY KEY (out_attendee_id, in_attendee_id)
-    WITH CLUSTERING ORDER BY (in_attendee_id ASC);
+    PRIMARY KEY (in_attendee_id, out_attendee_id)
+    WITH CLUSTERING ORDER BY (out_attendee_id ASC);
 
 CREATE TABLE sebulba.person__attended__session (
     person_attendee_id text,
@@ -228,4 +161,3 @@ CREATE TABLE sebulba.flight_telematics__included_in__flight (
     PRIMARY KEY (flight_telematics_flight_id, flight_telematics_time, flight_flight_id)
 ) WITH CLUSTERING ORDER BY (flight_telematics_time ASC, flight_flight_id ASC)
     AND EDGE LABEL included_in FROM flight_telematics(flight_telematics_flight_id, flight_telematics_time) TO flight(flight_flight_id);
-
