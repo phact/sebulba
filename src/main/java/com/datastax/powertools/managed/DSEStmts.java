@@ -12,7 +12,6 @@ import com.datastax.driver.core.Session;
 
 public class DSEStmts {
 
-
     private static final String KEYSPACE_PATTERN = ";;;KEYSPACE;;;";
     private static final String REPLICATION_STRATEGY_PATTERN = ";;;REPLICATION_STRATEGY;;;";
 
@@ -33,6 +32,8 @@ public class DSEStmts {
         private PreparedStatement insertPersonFlewInFlight;
         private PreparedStatement insertEventsIncludedInFlight;
         private PreparedStatement insertTelematicsIncludedInFlight;
+        private PreparedStatement selectPerson;
+        private PreparedStatement insertPerson;
 
         public Prepared(Session session, String keyspace, String replicationStrategy) {
             this.keyspace = keyspace;
@@ -99,6 +100,15 @@ public class DSEStmts {
                         "VALUES " +
                         "(:flight_telematics_flight_id, :flight_telematics_time, :flight_flight_id)";
             insertTelematicsIncludedInFlight = prepare(statement);
+
+            statement = "SELECT attendee_id, first_name FROM sebulba.person WHERE attendee_id = :attendee_id";
+            selectPerson = prepare(statement);
+
+            statement = "INSERT INTO sebulba.person" +
+                        "(attendee_id, first_name)" +
+                        "VALUES " +
+                        "(:attendee_id, :first_name)";
+            insertPerson = prepare(statement);
         }
 
         public PreparedStatement prepare(String stmt) {
@@ -120,9 +130,11 @@ public class DSEStmts {
         public PreparedStatement getInsertEvent() {
             return insertEvent;
         }
+
         public PreparedStatement getInsertPosition() {
             return insertPosition;
         }
+
         public PreparedStatement getInsertRaceSummary() {
             return insertRaceSummary;
         }
@@ -155,6 +167,16 @@ public class DSEStmts {
         public PreparedStatement getInsertTelematicsIncludedInFlight()
         {
             return insertTelematicsIncludedInFlight;
+        }
+
+        public PreparedStatement getSelectPerson()
+        {
+            return selectPerson;
+        }
+
+        public PreparedStatement getInsertPerson()
+        {
+            return insertPerson;
         }
     }
 }
