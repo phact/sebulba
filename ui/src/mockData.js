@@ -3,7 +3,6 @@ import _ from "lodash";
 
 const numPeople = 50;
 const numSessions = 20;
-//const numDrones = 2;
 const numCompanies = 10;
 const numFlights = 80;
 const numTopics = 8;
@@ -43,28 +42,6 @@ for (let i = 0; i < numTopics; i++) {
     }
   });
 }
-
-// build drones
-const drones = [
-  {
-    group: "nodes",
-    data: {
-      nodeType: "drone",
-      label: "",
-      id: "drone-" + faker.random.uuid(),
-      name: "Drone 1"
-    }
-  },
-  {
-    group: "nodes",
-    data: {
-      nodeType: "drone",
-      label: "",
-      id: "drone-" + faker.random.uuid(),
-      name: "Drone 2"
-    }
-  }
-];
 
 // buildFlights
 const flights = [];
@@ -113,21 +90,6 @@ people.forEach(person => {
           target: coWorker.data.id
         }
       });
-    }
-  });
-});
-
-// link drones to flights
-const flownEdges = [];
-flights.forEach(flight => {
-  flownEdges.push({
-    group: "edges",
-    classes: "flownEdges",
-    data: {
-      label: "flown by",
-      id: faker.random.uuid(),
-      source: flight.data.id,
-      target: _.sample(drones).data.id
     }
   });
 });
@@ -197,14 +159,12 @@ people.forEach(person => {
   });
 });
 
-export const graphData = [
+const graphData = [
   ...sessions,
   ...topics,
-  ...drones,
   ...people,
   ...flights,
   ...worksWithEdges,
-  ...flownEdges,
   ...flewEdges,
   ...attendedEdges,
   ...interestedEdges
@@ -224,3 +184,121 @@ for (let i = 0; i < numRaces; i++) {
 }
 
 export const tableData = [...races];
+
+const generatePersonNeighborhood = () => {
+  // create person
+  const person = {
+    group: "nodes",
+    data: {
+      nodeType: "person",
+      label: "",
+      id: "person-" + faker.random.uuid(),
+      name: faker.name.findName(),
+      email: faker.internet.email(),
+      company: _.sample(companies),
+      bestTime: faker.random.number()
+    }
+  };
+
+  // create flight
+  const flight = {
+    group: "nodes",
+    data: {
+      nodeType: "flight",
+      label: "",
+      id: "flight-" + faker.random.uuid(),
+      duration: faker.random.number()
+    }
+  };
+
+  // create a flew edge
+  const flewEdge = {
+    group: "edges",
+    classes: "flewEdges",
+    data: {
+      label: "flew",
+      id: faker.random.uuid(),
+      source: person.data.id,
+      target: flight.data.id
+    }
+  };
+
+  //create topic edges
+  const interestedEdges = [];
+  const randomTopics = _.sampleSize(topics, getRandomInt());
+  randomTopics.forEach(topic => {
+    interestedEdges.push({
+      classes: "interestedEdges",
+      group: "edges",
+      data: {
+        label: "interested in",
+        id: faker.random.uuid(),
+        source: person.data.id,
+        target: topic.data.id
+      }
+    });
+  });
+
+  // create works with edges
+  const worksWithEdges = [];
+  const coworkers = _.filter(timeSeriesGraphData, [
+    "data.company",
+    person.data.company
+  ]);
+  coworkers.forEach(coWorker => {
+    if (coWorker.data.id !== person.data.id) {
+      worksWithEdges.push({
+        group: "edges",
+        classes: "worksWithEdge",
+        data: {
+          label: "works with",
+          id: faker.random.uuid(),
+          source: person.data.id,
+          target: coWorker.data.id
+        }
+      });
+    }
+  });
+
+  // create session edges
+  const randomSessions = _.sampleSize(sessions, getRandomInt());
+  const attendedEdges = [];
+  randomSessions.forEach(session => {
+    attendedEdges.push({
+      classes: "attendedEdges",
+      group: "edges",
+      data: {
+        label: "attended",
+        id: faker.random.uuid(),
+        source: person.data.id,
+        target: session.data.id
+      }
+    });
+  });
+
+  return [
+    person,
+    flight,
+    flewEdge,
+    ...attendedEdges,
+    ...interestedEdges,
+    ...worksWithEdges
+  ];
+};
+
+let firstRun = true;
+let timeSeriesGraphData = [...sessions, ...topics];
+export const getGraphData = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (!firstRun) {
+        timeSeriesGraphData = [
+          ...timeSeriesGraphData,
+          ...generatePersonNeighborhood()
+        ];
+      }
+      firstRun = false;
+      resolve(timeSeriesGraphData);
+    }, 2000);
+  });
+};

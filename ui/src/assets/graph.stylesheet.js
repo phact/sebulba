@@ -64,7 +64,7 @@ export default [
     }
   },
   {
-    selector: 'node[nodeType = "drone"]',
+    selector: 'node[nodeType = "flight"]',
     style: {
       "background-color": theme.palette.common.white
     }
@@ -73,12 +73,6 @@ export default [
     selector: 'node[nodeType = "session"]',
     style: {
       "background-color": theme.palette.orange
-    }
-  },
-  {
-    selector: 'node[nodeType = "flight"]',
-    style: {
-      "background-color": theme.palette.primary.main
     }
   },
   {

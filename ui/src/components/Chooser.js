@@ -20,12 +20,12 @@ const views = [
     subTitle: "Automated for passive consumption",
     path: "/leaderboard"
   },
-  {
-    icon: <MonitorDashboardIcon />,
-    title: "Explorer Mode",
-    subTitle: "Explore the entire racer graph",
-    path: "/explorer"
-  },
+  // {
+  //   icon: <MonitorDashboardIcon />,
+  //   title: "Explorer Mode",
+  //   subTitle: "Explore the entire racer graph",
+  //   path: "/explorer"
+  // },
   {
     icon: <CellphoneTextIcon />,
     title: "Operator Mode",

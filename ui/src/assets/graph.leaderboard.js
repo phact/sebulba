@@ -200,14 +200,24 @@ export const graph = {
 
 // work with the cy graph when ready
 export const leaderBoardGraphReady = (cy, currentLeaderId) => {
+  // if we don't have any elements, then don't do anything
+  if (cy.elements().length === 0) {
+    return false;
+  }
+
   // if a current leader is selected, select it
   if (currentLeaderId) {
     const selectedNode = cy.$("#" + currentLeaderId);
     highlightPerson(selectedNode, cy);
   }
-  if (!currentLeaderId && initialized) {
+  if (!currentLeaderId && initialized && selectedNeighborhood) {
     // reset the graph on empty leaders
     clear(cy);
+  }
+
+  // re-layout when new elements are added
+  if (!currentLeaderId && initialized) {
+    initialLayout(cy);
   }
 
   // we don't need to re-initialize on renders

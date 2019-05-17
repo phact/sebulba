@@ -12,7 +12,8 @@ const useStyles = makeStyles(theme => ({
   list: {
     width: 400,
     borderRight: "1px solid",
-    borderColor: theme.palette.background.paper
+    borderColor: theme.palette.background.paper,
+    height: "100%"
   },
   subHeader: {
     opacity: 0.3
