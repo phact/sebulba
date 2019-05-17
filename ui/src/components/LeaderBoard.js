@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import Grid from "@material-ui/core/Grid";
 import LeaderBoardGraph from "./LeaderBoardGraph";
 import LeaderBoardList from "./LeaderBoardList";
-import { graphData } from "../mockData";
+import { getGraphData } from "../mockData";
 import _ from "lodash";
 
 const useStyles = makeStyles(theme => ({
@@ -14,12 +14,11 @@ const useStyles = makeStyles(theme => ({
   graph: {
     flexGrow: 1,
     maxHeight: "100vh"
-    // add some subtle animation
-    // animation: "graph-motion 30s linear infinite"
   },
   listContainer: {
     padding: theme.spacing(3),
-    paddingRight: 0
+    paddingRight: 0,
+    height: "100%"
   },
   brand: {
     position: "fixed",
@@ -29,46 +28,46 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const leaders = _(graphData)
-  .filter(["data.nodeType", "person"])
-  .sampleSize(7)
-  .value();
-
-const cycleAnimation = setLeaderId => {
+const cycleAnimation = (setCurrentLeaderId, setLeaders, setGraphData) => {
   console.log("animation: start");
-  setTimeout(() => {
-    const newLeader = _.sample(leaders);
-    setLeaderId(newLeader.data.id);
-    console.log("animation: highlight");
-  }, 10000);
-  setTimeout(() => {
-    setLeaderId(null);
-    console.log("animation: clear");
-  }, 20000);
+  // load the graph from the network
+  getGraphData().then(graphData => {
+    // TODO: Parse/Filter/Reduce data from the API response
+    // setup the data from the api response
+    const leaders = _(graphData)
+      .filter(["data.nodeType", "person"])
+      .slice(0, 7)
+      .value();
+    setLeaders(leaders);
+    setGraphData(graphData);
+
+    // set the animations
+    setTimeout(() => {
+      const newLeader = _.sample(leaders);
+      if (newLeader) {
+        setCurrentLeaderId(newLeader.data.id);
+      }
+      console.log("animation: highlight");
+    }, 10000);
+    setTimeout(() => {
+      setCurrentLeaderId(null);
+      console.log("animation: clear");
+    }, 20000);
+  });
 };
 
 const LeaderBoard = () => {
   const classes = useStyles();
   const [currentLeaderId, setCurrentLeaderId] = React.useState(null);
-
-  //TODO: setup a timer that cycles through the leaders
-  //TODO: select the leaders node and isolate their neighborhood
-  //TODO: add new data to the graph when the race is complete
-
-  // animation loop:
-  // wait 10 seconds
-  // select random person from the list
-  // highlight list person
-  // highlight neighborhood
-  // wait 10 seconds
-  // unhighlight neighborhood
+  const [graphData, setGraphData] = React.useState([]);
+  const [leaders, setLeaders] = React.useState([]);
 
   // setup and start the animation loop
   React.useEffect(() => {
-    cycleAnimation(setCurrentLeaderId);
+    cycleAnimation(setCurrentLeaderId, setLeaders, setGraphData);
     setInterval(() => {
-      cycleAnimation(setCurrentLeaderId);
-    }, 20000);
+      cycleAnimation(setCurrentLeaderId, setLeaders, setGraphData);
+    }, 25000);
   }, []); // run once!
 
   return (
