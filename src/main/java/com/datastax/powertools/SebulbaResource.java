@@ -3,20 +3,18 @@ package com.datastax.powertools;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.utils.UUIDs;
 import com.datastax.driver.dse.DseSession;
-import com.datastax.driver.dse.graph.GraphNode;
-import com.datastax.driver.dse.graph.GraphResultSet;
-import com.datastax.driver.dse.graph.GraphStatement;
 import com.datastax.dse.graph.api.DseGraph;
 import com.datastax.powertools.api.DronePosition;
 import com.datastax.powertools.api.Event;
-import com.datastax.powertools.api.GraphRepresentation;
+import com.datastax.powertools.api.VertexRepresentation;
 import com.datastax.powertools.managed.DSEManager;
 import com.datastax.powertools.managed.DSEStmts;
+import com.datastax.shaded.jackson.core.JsonProcessingException;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
+import org.apache.tinkerpop.gremlin.structure.util.detached.DetachedVertex;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -364,63 +362,59 @@ public class SebulbaResource {
     @GET
     @Path("/graph")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getGraph() {
-        try {
-            GraphTraversalSource g = DseGraph.traversal();
-            GraphTraversal traversal = g.V().outE();
+    public List<VertexRepresentation> getGraph() throws JsonProcessingException {
+        GraphTraversalSource g = DseGraph.traversal(session);
 
-            GraphStatement graphStatement = DseGraph.statementFromTraversal(traversal);
+        List<Vertex> vertices = g.V().toList();
 
-            GraphResultSet output = session.executeGraph(graphStatement);
-
-            List<GraphNode> nodes = output.all();
-
-            return nodes.toString();
-
-        }catch (Exception e){
-            System.out.println(e.toString());
-            e.printStackTrace();
-            return null;
+        for (Vertex vertex : vertices) {
+            VertexRepresentation vertexR = new VertexRepresentation();
+            vertexR.setLabel(vertex.label());
+            vertexR.setLabel(vertex.label());
         }
+
+        List<VertexRepresentation> vertexList = vertexListToGraphRepresentation(vertices);
+
+        return vertexList;
+        //TODO: should not be necessary, look into this
+        //ObjectMapper mapper = new ObjectMapper();
+        //String json =  mapper.writeValueAsString(vertexList);
+        //return json;
     }
 
 
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<GraphRepresentation.VertexRepresentation> getList(
+    public List<VertexRepresentation> getList(
             @QueryParam("vertexLabel") String vertexLabel,
             @QueryParam("vertexId") String vertexId,
             @QueryParam("property") String property,
-            @QueryParam("count") int count,
-            @QueryParam("max") int max,
-            @QueryParam("min") int min) {
+            @QueryParam("count") long count,
+            @QueryParam("max") long max,
+            @QueryParam("min") long min) {
         GraphTraversalSource g = DseGraph.traversal(session);
 
         List<Vertex> vertices = g.V().hasLabel(vertexLabel).has(property, P.between(min, max)).limit(count).order().by(property, decr).toList();
         for (Vertex vertex : vertices) {
-            GraphRepresentation.VertexRepresentation vertexR = new GraphRepresentation.VertexRepresentation();
+            VertexRepresentation vertexR = new VertexRepresentation();
             vertexR.setLabel(vertex.label());
             vertexR.setLabel(vertex.label());
         }
 
-        List<GraphRepresentation.VertexRepresentation> vertexList = vertexListToGraphRepresentation(vertices);
+        List<VertexRepresentation> vertexList = vertexListToGraphRepresentation(vertices);
         return vertexList;
     }
 
-    private List<GraphRepresentation.VertexRepresentation> vertexListToGraphRepresentation(List<Vertex> vertices) {
-        List<GraphRepresentation.VertexRepresentation> vertexList = new ArrayList();
+    private List<VertexRepresentation> vertexListToGraphRepresentation(List<Vertex> vertices) {
+        List<VertexRepresentation> vertexList = new ArrayList();
         for (Vertex vertex : vertices) {
-            GraphRepresentation.VertexRepresentation vertexR = new GraphRepresentation.VertexRepresentation();
+            VertexRepresentation vertexR = new VertexRepresentation();
             vertexR.setLabel(vertex.label());
-            LinkedHashMap<String, String> complexId = (LinkedHashMap) vertex.id();
-            for (Map.Entry<String, String> entry : complexId.entrySet()) {
-                if (entry.getKey().equals("~label")){
-                    vertexR.setLabel(entry.getValue());
-                }else {
-                    vertexR.setId(entry.getValue());
-                }
-            }
+            String[] complexId = ((DetachedVertex) vertex).id().toString().split(":|#");
+            //for (Map.Entry<String, String> entry : complexId) {
+            vertexR.setLabel(complexId[0]);
+            vertexR.setId(complexId[1]);
 
             Map<String, Object> properties = new HashMap<>();
             for (Iterator<VertexProperty<Object>> it = vertex.properties(); it.hasNext(); ) {

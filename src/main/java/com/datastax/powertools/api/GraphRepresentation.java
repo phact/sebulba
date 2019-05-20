@@ -19,6 +19,7 @@ public class GraphRepresentation {
         this.edgeList= edgeList;
     }
 
+    /*
     public static class VertexRepresentation {
         @JsonbProperty
         private String id;
@@ -66,6 +67,7 @@ public class GraphRepresentation {
             this.target = target;
         }
     }
+    */
 
     @JsonbProperty
     private List<VertexRepresentation> vertexList;
