@@ -288,7 +288,7 @@ const generatePersonNeighborhood = () => {
 
 let firstRun = true;
 let timeSeriesGraphData = [...sessions, ...topics];
-export const getGraphData = () => {
+export const getMockGraphData = () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (!firstRun) {

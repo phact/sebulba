@@ -364,7 +364,7 @@ public class SebulbaResource {
     public GraphRepresentation getGraph() throws JsonProcessingException {
         GraphTraversalSource g = DseGraph.traversal(session);
 
-        List<Vertex> vertices = g.V().toList();
+        List<Vertex> vertices = g.V().hasLabel("flight", "person", "session", "topic").toList();
 
         for (Vertex vertex : vertices) {
             VertexRepresentation vertexR = new VertexRepresentation();
@@ -373,7 +373,7 @@ public class SebulbaResource {
 
         List<VertexRepresentation> vertexList = vertexListToGraphRepresentation(vertices);
 
-        List<Edge> edges = g.E().toList();
+        List<Edge> edges = g.E().hasLabel("flew_in", "interested_in", "works_with", "attended").toList();
 
         for (Edge edge: edges) {
             EdgeRepresentation vertexR = new EdgeRepresentation();

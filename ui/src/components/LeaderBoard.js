@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import Grid from "@material-ui/core/Grid";
 import LeaderBoardGraph from "./LeaderBoardGraph";
 import LeaderBoardList from "./LeaderBoardList";
-import { getGraphData } from "../mockData";
+import { getGraphData } from "../api";
 import _ from "lodash";
 
 const useStyles = makeStyles(theme => ({
