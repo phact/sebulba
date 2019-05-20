@@ -11,6 +11,7 @@ import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import com.datastax.driver.dse.DseCluster;
 import com.datastax.driver.dse.DseSession;
 import com.datastax.driver.dse.graph.GraphOptions;
+import com.datastax.driver.dse.graph.GraphProtocol;
 import com.datastax.powertools.SebulbaConfiguration;
 import org.jboss.logging.Logger;
 
@@ -53,7 +54,7 @@ public class DSEManager {
                 addContactPoints(contactPoints).
                 withPort(cqlPort).
                 withCredentials(username, password).
-                withGraphOptions(new GraphOptions().setGraphName(graphName)).
+                withGraphOptions(new GraphOptions().setGraphSubProtocol(GraphProtocol.GRAPHSON_3_0).setGraphName(graphName)).
                 withoutJMXReporting();
 
         password = null; // defensive
