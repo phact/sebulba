@@ -4,14 +4,13 @@ import com.datastax.driver.core.*;
 import com.datastax.driver.core.utils.UUIDs;
 import com.datastax.driver.dse.DseSession;
 import com.datastax.dse.graph.api.DseGraph;
-import com.datastax.powertools.api.DronePosition;
-import com.datastax.powertools.api.Event;
-import com.datastax.powertools.api.VertexRepresentation;
+import com.datastax.powertools.api.*;
 import com.datastax.powertools.managed.DSEManager;
 import com.datastax.powertools.managed.DSEStmts;
 import com.datastax.shaded.jackson.core.JsonProcessingException;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.apache.tinkerpop.gremlin.structure.util.detached.DetachedVertex;
@@ -362,7 +361,7 @@ public class SebulbaResource {
     @GET
     @Path("/graph")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<VertexRepresentation> getGraph() throws JsonProcessingException {
+    public GraphRepresentation getGraph() throws JsonProcessingException {
         GraphTraversalSource g = DseGraph.traversal(session);
 
         List<Vertex> vertices = g.V().toList();
@@ -370,17 +369,24 @@ public class SebulbaResource {
         for (Vertex vertex : vertices) {
             VertexRepresentation vertexR = new VertexRepresentation();
             vertexR.setLabel(vertex.label());
-            vertexR.setLabel(vertex.label());
         }
 
         List<VertexRepresentation> vertexList = vertexListToGraphRepresentation(vertices);
 
-        return vertexList;
-        //TODO: should not be necessary, look into this
-        //ObjectMapper mapper = new ObjectMapper();
-        //String json =  mapper.writeValueAsString(vertexList);
-        //return json;
+        List<Edge> edges = g.E().toList();
+
+        for (Edge edge: edges) {
+            EdgeRepresentation vertexR = new EdgeRepresentation();
+            vertexR.setLabel(edge.label());
+        }
+
+        List<EdgeRepresentation> edgeList = edgeListToGraphRepresentation(edges);
+
+        GraphRepresentation graphRep = new GraphRepresentation(vertexList, edgeList);
+
+        return graphRep;
     }
+
 
 
     @GET
@@ -406,6 +412,22 @@ public class SebulbaResource {
         return vertexList;
     }
 
+    private List<EdgeRepresentation> edgeListToGraphRepresentation(List<Edge> edges) {
+        List<EdgeRepresentation> edgeList = new ArrayList();
+        for (Edge edge: edges) {
+            EdgeRepresentation edgeR = new EdgeRepresentation();
+            edgeR.setLabel(edge.label());
+            edgeR.setId(edge.id().toString());
+
+            Map<String, Object> properties = new HashMap<>();
+            edgeR.setSource(edge.inVertex().id().toString().split(":|#")[1]);
+            edgeR.setTarget(edge.outVertex().id().toString().split(":|#")[1]);
+            edgeList.add(edgeR);
+        }
+        return edgeList;
+
+
+    }
     private List<VertexRepresentation> vertexListToGraphRepresentation(List<Vertex> vertices) {
         List<VertexRepresentation> vertexList = new ArrayList();
         for (Vertex vertex : vertices) {

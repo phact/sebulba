@@ -19,58 +19,24 @@ public class GraphRepresentation {
         this.edgeList= edgeList;
     }
 
-    /*
-    public static class VertexRepresentation {
-        @JsonbProperty
-        private String id;
-        @JsonbProperty
-        private String label;
-        @JsonbProperty
-        private Map<String, Object> properties;
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
-        public void setProperties(Map<String, Object> properties) {
-            this.properties = properties;
-        }
-    }
-
-    public static class EdgeRepresentation {
-        @JsonbProperty
-        private String id;
-        @JsonbProperty
-        private String label;
-        @JsonbProperty
-        private String source;
-        @JsonbProperty
-        private String target;
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
-        public void setSource(String source) {
-            this.source = source;
-        }
-
-        public void setTarget(String target) {
-            this.target = target;
-        }
-    }
-    */
-
     @JsonbProperty
     private List<VertexRepresentation> vertexList;
     @JsonbProperty
     private List<EdgeRepresentation> edgeList;
+
+    public List<VertexRepresentation> getVertexList() {
+        return vertexList;
+    }
+
+    public void setVertexList(List<VertexRepresentation> vertexList) {
+        this.vertexList = vertexList;
+    }
+
+    public List<EdgeRepresentation> getEdgeList() {
+        return edgeList;
+    }
+
+    public void setEdgeList(List<EdgeRepresentation> edgeList) {
+        this.edgeList = edgeList;
+    }
 }
