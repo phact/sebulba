@@ -157,3 +157,13 @@ schema.edgeLabel('interested_in').
     partitionBy('topic_topic_id').
     clusterBy('person_attendee_id').
     create()
+
+schema.vertexLabel('company').
+    ifNotExists().
+    partitionBy('name', Text).
+    create()
+
+schema.edgeLabel('worksFor').
+    ifNotExists().
+    from('person').to('company').
+    create()
