@@ -7,16 +7,12 @@ package com.datastax.powertools.api;
  */
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
 public class VertexRepresentation {
-    @JsonProperty
     private String id;
-    @JsonProperty
     private String label;
-    @JsonProperty
     private Map<String, Object> properties;
 
     public void setId(String id) {
