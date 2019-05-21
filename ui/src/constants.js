@@ -1,4 +1,4 @@
 export default {
-  API_BASE_URL: "//localhost:8080",
+  API_BASE_URL: "//" + window.location.hostname +  ":8080",
   USE_MOCK: false
 };
