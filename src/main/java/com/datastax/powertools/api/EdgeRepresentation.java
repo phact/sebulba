@@ -7,18 +7,13 @@ package com.datastax.powertools.api;
  */
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.json.bind.annotation.JsonbProperty;
 
 public class EdgeRepresentation {
-    @JsonProperty
     private String id;
-    @JsonProperty
     private String label;
-    @JsonProperty
     private String source;
-    @JsonProperty
     private String target;
 
     public void setId(String id) {
