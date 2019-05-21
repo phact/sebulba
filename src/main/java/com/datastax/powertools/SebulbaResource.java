@@ -8,6 +8,7 @@ import com.datastax.powertools.api.*;
 import com.datastax.powertools.managed.DSEManager;
 import com.datastax.powertools.managed.DSEStmts;
 import com.datastax.shaded.jackson.core.JsonProcessingException;
+import io.quarkus.runtime.StartupEvent;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Edge;
@@ -16,6 +17,7 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.apache.tinkerpop.gremlin.structure.util.detached.DetachedVertex;
 
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -23,6 +25,7 @@ import java.util.*;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
 import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.unfold;
+import static org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages.LOGGER;
 
 @Path("/sebulba")
 public class SebulbaResource {
@@ -48,7 +51,12 @@ public class SebulbaResource {
     @SessionScoped
     private String currentFlight;
 
-    @Inject
+    void onStart(@Observes StartupEvent ev) {               //
+        LOGGER.info("The application is starting...");
+        setup();
+        LOGGER.info("Connected and ready to go");
+    }
+
     void setup() {
         dseManager.configure(config);
         dseManager.start();
