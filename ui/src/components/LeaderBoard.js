@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import Grid from "@material-ui/core/Grid";
 import LeaderBoardGraph from "./LeaderBoardGraph";
 import LeaderBoardList from "./LeaderBoardList";
-import { getGraphData } from "../api";
+import { getGraphData, parseLeaders } from "../api";
 import _ from "lodash";
 
 const useStyles = makeStyles(theme => ({
@@ -32,12 +32,8 @@ const cycleAnimation = (setCurrentLeaderId, setLeaders, setGraphData) => {
   console.log("animation: start");
   // load the graph from the network
   getGraphData().then(graphData => {
-    // TODO: Parse/Filter/Reduce data from the API response
     // setup the data from the api response
-    const leaders = _(graphData)
-      .filter(["data.nodeType", "person"])
-      .slice(0, 7)
-      .value();
+    const leaders = parseLeaders(graphData);
     setLeaders(leaders);
     setGraphData(graphData);
 
