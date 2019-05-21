@@ -62,10 +62,15 @@ const fadeElementsOut = elements => {
 
 // fit to elements
 const fitToElements = (cy, elements) => {
+  let fitLayoutPadding = layoutPadding;
+  if(elements.length && elements.length < 6) {
+    fitLayoutPadding = layoutPadding * 10;
+  } 
+
   cy.animation({
     fit: {
       eles: elements,
-      padding: layoutPadding
+      padding: fitLayoutPadding
     },
     easing: easing,
     duration: animationDuration
