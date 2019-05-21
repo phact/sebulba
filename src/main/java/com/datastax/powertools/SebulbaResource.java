@@ -46,7 +46,7 @@ public class SebulbaResource {
     private long startTime;
 
     @SessionScoped
-    private String currentFlight = "unknown";
+    private String currentFlight;
 
     @Inject
     void setup() {
@@ -60,10 +60,10 @@ public class SebulbaResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/setup/{racerId}")
     public String setupRace(@PathParam("racerId") String racerName) {
+        currentFlight = null;
         UUID event_id = UUIDs.timeBased();
         String event_type = "register";
         long eventTime= new Date().getTime();
-        currentFlight = "";
         BatchStatement batchStatement = new BatchStatement();
         this.racerName = racerName;
 
@@ -166,7 +166,7 @@ public class SebulbaResource {
 
         session.execute(batchStatement);
 
-        currentFlight = "";
+        currentFlight = null;
     }
 
     @GET
@@ -238,6 +238,9 @@ public class SebulbaResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/event/")
     public Event insertEvent(Event event) {
+        if (currentFlight == null){
+            return null;
+        }
         UUID event_id = UUIDs.timeBased();
         String event_type = "payload";
 
@@ -291,6 +294,9 @@ public class SebulbaResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/position/")
     public DronePosition insertPosition(DronePosition position) {
+        if (currentFlight == null){
+            return null;
+        }
         long eventTime = new Date().getTime();
         BatchStatement batchStatement = new BatchStatement();
 

@@ -60,12 +60,14 @@ public class DSEManager {
         password = null; // defensive
 
         cluster = builder.build();
+        boolean connected = false;
+        while (connected)
         try {
             session = this.cluster.connect();
             stmts = new DSEStmts.Prepared(session, keyspaceName, replicationStrategy);
+            connected = true;
         }catch (NoHostAvailableException e){
             LOG.error("DSE is not up.");
-            System.exit(-1);
         }
     }
 
