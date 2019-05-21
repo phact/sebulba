@@ -3,6 +3,48 @@ import axios from "axios";
 import constants from "./constants";
 import _ from "lodash";
 
+const parseDuration = duration => {
+  return (
+    duration.substring(0, duration.length - 3) +
+    "." +
+    duration.substring(duration.length - 3)
+  );
+};
+
+const reduceGraph = graphData => {
+  // get a list of persons we care about
+  const persons = _(graphData)
+    .filter(["data.nodeType", "flight"])
+    .map(flight => {
+      return flight.data.racer_id;
+    })
+    .uniq()
+    .value();
+
+  const newGraph = [];
+  graphData.forEach(item => {
+    // cleanup edges
+    if (
+      item.group === "edges" &&
+      item.data.label !== "worksWith" &&
+      persons.includes(item.data.source)
+    ) {
+      return newGraph.push(item);
+    }
+
+    // add everything else
+    if (item.group === "nodes" && item.data.label !== "person") {
+      return newGraph.push(item);
+    }
+    // cleanup person verticies
+    if (persons.includes(item.data.id)) {
+      return newGraph.push(item);
+    }
+  });
+
+  return newGraph;
+};
+
 export const parseLeaders = graphData => {
   const flights = _(graphData)
     .filter(["data.nodeType", "flight"])
@@ -10,6 +52,11 @@ export const parseLeaders = graphData => {
     .value();
   const leaders = [];
   flights.forEach(flight => {
+    if (flight.data.duration) {
+      flight.data.duration = parseDuration(flight.data.duration.toString());
+    } else {
+      flight.data.duration = flight.data.race_status;
+    }
     const person = _.find(graphData, [
       "data.attendee_id",
       flight.data.racer_id
@@ -19,16 +66,10 @@ export const parseLeaders = graphData => {
       flight.data.racer_id
     ]);
     if (!duplicate && person && person.data && flight.data.duration) {
-      const duration = flight.data.duration.toString();
-      const newDuration =
-        duration.substring(0, duration.length - 3) +
-        "." +
-        duration.substring(duration.length - 3);
-      person.data.bestTime = newDuration;
+      person.data.bestTime = flight.data.duration;
       leaders.push(person);
     }
   });
-  console.log(leaders);
   return leaders;
 };
 
@@ -36,7 +77,7 @@ const parseGraph = graphData => {
   const graph = [];
   // parse the edges
   graphData.edgeList.forEach(edge => {
-    if (edge.source !== "unknown") {
+    if (edge.source !== "unknown" && edge.target !== "unknown") {
       graph.push({
         group: "edges",
         data: { ...edge }
@@ -51,7 +92,7 @@ const parseGraph = graphData => {
       if (vertex.label === "person") {
         nodeId = vertex["attendee_id"];
         const firstName = vertex.first_name ? vertex.first_name : "";
-        const lastName = vertex.last_name ? vertex.first_name : "";
+        const lastName = vertex.last_name ? vertex.last_name : "";
         vertex.name = firstName + " " + lastName;
       } else {
         nodeId = vertex[vertex.label + "_id"];
@@ -69,6 +110,11 @@ const parseGraph = graphData => {
       }
     });
   });
+
+  // reduce the graph size
+  if (constants.REDUCE_GRAPH) {
+    return reduceGraph(graph);
+  }
   return graph;
 };
 

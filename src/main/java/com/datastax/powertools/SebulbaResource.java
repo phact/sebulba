@@ -389,7 +389,8 @@ public class SebulbaResource {
             Map<String, Object> edgeR = new HashMap<>();
             edgeR.put("source", edge.outVertex().id().toString().split(":|#")[1]);
             edgeR.put("target", edge.inVertex().id().toString().split(":|#")[1]);
-            edgeR.put("id",edge.id().toString());
+            edgeR.put("id", edge.id().toString());
+            edgeR.put("label", edge.label());
             edgeList.add(edgeR);
         }
 
