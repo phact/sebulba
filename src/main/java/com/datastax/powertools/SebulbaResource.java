@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.*;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
-import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.*;
+import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.unfold;
 
 @Path("/sebulba")
 public class SebulbaResource {
