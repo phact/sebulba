@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.*;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
+import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.unfold;
 
 @Path("/sebulba")
 public class SebulbaResource {
@@ -367,30 +368,26 @@ public class SebulbaResource {
     @GET
     @Path("/graph")
     @Produces(MediaType.APPLICATION_JSON)
-    public GraphRepresentation getGraph() throws JsonProcessingException {
+    public Map<String, List> getGraph() throws JsonProcessingException {
         GraphTraversalSource g = DseGraph.traversal(session);
 
-        List<Vertex> vertices = g.V().hasLabel("flight", "person", "session", "topic").toList();
+        Map<String, List> response = new HashMap<>();
 
-        for (Vertex vertex : vertices) {
-            VertexRepresentation vertexR = new VertexRepresentation();
-            vertexR.setLabel(vertex.label());
-        }
-
-        List<VertexRepresentation> vertexList = vertexListToGraphRepresentation(vertices);
+        List<Map<Object, Object>> vertices = g.V().hasLabel("person", "session", "flight", "topic").valueMap(true).by(unfold()).toList();
 
         List<Edge> edges = g.E().hasLabel("flew_in", "interested_in", "works_with", "attended").toList();
-
+        List<Map<String, Object>> edgeList = new ArrayList();
         for (Edge edge: edges) {
-            EdgeRepresentation vertexR = new EdgeRepresentation();
-            vertexR.setLabel(edge.label());
+            Map<String, Object> edgeR = new HashMap<>();
+            edgeR.put("source", edge.outVertex().id().toString().split(":|#")[1]);
+            edgeR.put("target", edge.inVertex().id().toString().split(":|#")[1]);
+            edgeR.put("id",edge.id().toString());
+            edgeList.add(edgeR);
         }
 
-        List<EdgeRepresentation> edgeList = edgeListToGraphRepresentation(edges);
-
-        GraphRepresentation graphRep = new GraphRepresentation(vertexList, edgeList);
-
-        return graphRep;
+        response.put("vertexList", vertices);
+        response.put("edgeList", edgeList);
+        return response;
     }
 
 
