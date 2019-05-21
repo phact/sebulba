@@ -61,7 +61,7 @@ public class DSEManager {
 
         cluster = builder.build();
         boolean connected = false;
-        while (connected)
+        while (!connected)
         try {
             session = this.cluster.connect();
             stmts = new DSEStmts.Prepared(session, keyspaceName, replicationStrategy);
