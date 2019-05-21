@@ -4,20 +4,44 @@ import constants from "./constants";
 import _ from "lodash";
 
 export const parseLeaders = graphData => {
-  return _(graphData)
-    .filter(["data.nodeType", "person"])
-    .slice(0, 20)
+  const flights = _(graphData)
+    .filter(["data.nodeType", "flight"])
+    .orderBy(["data.duration"], ["asc"])
     .value();
+  const leaders = [];
+  flights.forEach(flight => {
+    const person = _.find(graphData, [
+      "data.attendee_id",
+      flight.data.racer_id
+    ]);
+    const duplicate = _.find(leaders, [
+      "data.attendee_id",
+      flight.data.racer_id
+    ]);
+    if (!duplicate && person && person.data && flight.data.duration) {
+      const duration = flight.data.duration.toString();
+      const newDuration =
+        duration.substring(0, duration.length - 3) +
+        "." +
+        duration.substring(duration.length - 3);
+      person.data.bestTime = newDuration;
+      leaders.push(person);
+    }
+  });
+  console.log(leaders);
+  return leaders;
 };
 
 const parseGraph = graphData => {
   const graph = [];
   // parse the edges
   graphData.edgeList.forEach(edge => {
-    graph.push({
-      group: "edges",
-      data: { ...edge }
-    });
+    if (edge.source !== "unknown") {
+      graph.push({
+        group: "edges",
+        data: { ...edge }
+      });
+    }
   });
   // parse the vertices
   graphData.vertexList.forEach(vertex => {
@@ -26,7 +50,9 @@ const parseGraph = graphData => {
     try {
       if (vertex.label === "person") {
         nodeId = vertex["attendee_id"];
-        vertex.name = vertex.first_name + " " + vertex.last_name;
+        const firstName = vertex.first_name ? vertex.first_name : "";
+        const lastName = vertex.last_name ? vertex.first_name : "";
+        vertex.name = firstName + " " + lastName;
       } else {
         nodeId = vertex[vertex.label + "_id"];
       }
