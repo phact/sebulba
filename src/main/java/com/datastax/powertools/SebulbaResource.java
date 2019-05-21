@@ -381,9 +381,9 @@ public class SebulbaResource {
 
         Map<String, List> response = new HashMap<>();
 
-        List<Map<Object, Object>> vertices = g.V().hasLabel("person", "session", "flight", "topic").valueMap(true).by(unfold()).toList();
+        List<Map<Object, Object>> vertices = g.V().hasLabel("person", "session", "flight", "topic", "company").valueMap(true).by(unfold()).toList();
 
-        List<Edge> edges = g.E().hasLabel("flew_in", "interested_in", "works_with", "attended").toList();
+        List<Edge> edges = g.E().hasLabel("flew_in", "interested_in", "worksFor" , "works_with", "attended").toList();
         List<Map<String, Object>> edgeList = new ArrayList();
         for (Edge edge: edges) {
             Map<String, Object> edgeR = new HashMap<>();
