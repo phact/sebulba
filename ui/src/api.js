@@ -88,7 +88,14 @@ export const parseLeaders = graphData => {
         "data.attendee_id",
         flight.data.racer_id
       ]);
-      if (!duplicate && person && person.data && flight.data.duration) {
+      if (
+        !duplicate &&
+        person &&
+        person.data &&
+        flight.data.duration &&
+        person.data.company &&
+        person.data.company !== "DataStax"
+      ) {
         person.data.bestTime = flight.data.duration;
         leaders.push(person);
       }
