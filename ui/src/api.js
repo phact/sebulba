@@ -63,7 +63,7 @@ const reduceGraph = graphData => {
       return newGraph.push(item);
     }
   });
-  
+
   return newGraph;
 };
 
@@ -79,17 +79,19 @@ export const parseLeaders = graphData => {
     } else {
       flight.data.duration = flight.data.race_status;
     }
-    const person = _.find(graphData, [
-      "data.attendee_id",
-      flight.data.racer_id
-    ]);
-    const duplicate = _.find(leaders, [
-      "data.attendee_id",
-      flight.data.racer_id
-    ]);
-    if (!duplicate && person && person.data && flight.data.duration) {
-      person.data.bestTime = flight.data.duration;
-      leaders.push(person);
+    if (flight.data.race_status === "completed") {
+      const person = _.find(graphData, [
+        "data.attendee_id",
+        flight.data.racer_id
+      ]);
+      const duplicate = _.find(leaders, [
+        "data.attendee_id",
+        flight.data.racer_id
+      ]);
+      if (!duplicate && person && person.data && flight.data.duration) {
+        person.data.bestTime = flight.data.duration;
+        leaders.push(person);
+      }
     }
   });
   return leaders;
