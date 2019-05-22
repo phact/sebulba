@@ -76,6 +76,12 @@ export default [
     }
   },
   {
+    selector: 'node[nodeType = "company"]',
+    style: {
+      "background-color": theme.palette.primary.main
+    }
+  },
+  {
     selector: 'node[nodeType = "topic"]',
     style: {
       "background-color": theme.palette.skyBlue

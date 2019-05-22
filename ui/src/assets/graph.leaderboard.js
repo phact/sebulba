@@ -17,6 +17,9 @@ const getNodeLabel = data => {
       labelData.primary = data.name;
       labelData.secondary = data.company;
       break;
+    case "company":
+      labelData.primary = data.name;
+      break;
     case "session":
       labelData.secondary = data.name;
       break;

@@ -21,27 +21,49 @@ const reduceGraph = graphData => {
     .uniq()
     .value();
 
+  // get a list of companies that we care about
+  const companies = _(graphData)
+    .filter(item => {
+      if (item.data.nodeType === "person" && persons.includes(item.data.id)) {
+        return true;
+      }
+      return false;
+    })
+    .map(person => {
+      return person.data.company;
+    })
+    .uniq()
+    .value();
+
   const newGraph = [];
   graphData.forEach(item => {
     // cleanup edges
     if (
       item.group === "edges" &&
-      item.data.label !== "worksWith" &&
+      item.data.label !== "works_with" &&
       persons.includes(item.data.source)
     ) {
       return newGraph.push(item);
     }
 
     // add everything else
-    if (item.group === "nodes" && item.data.label !== "person") {
+    if (
+      item.group === "nodes" &&
+      !["person", "company"].includes(item.data.label)
+    ) {
       return newGraph.push(item);
     }
     // cleanup person verticies
     if (persons.includes(item.data.id)) {
       return newGraph.push(item);
     }
-  });
 
+    // cleanup company verticies
+    if (companies.includes(item.data.name)) {
+      return newGraph.push(item);
+    }
+  });
+  
   return newGraph;
 };
 
@@ -94,6 +116,8 @@ const parseGraph = graphData => {
         const firstName = vertex.first_name ? vertex.first_name : "";
         const lastName = vertex.last_name ? vertex.last_name : "";
         vertex.name = firstName + " " + lastName;
+      } else if (vertex.label === "company") {
+        nodeId = vertex["name"];
       } else {
         nodeId = vertex[vertex.label + "_id"];
       }
