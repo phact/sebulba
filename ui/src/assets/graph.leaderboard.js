@@ -4,7 +4,7 @@ let unselectedNodes = null;
 let initialized = false;
 const animationDuration = 500;
 const easing = "ease-in-out";
-const layoutPadding = 20;
+const layoutPadding = 40;
 
 const getNodeLabel = data => {
   const labelData = {
@@ -21,7 +21,7 @@ const getNodeLabel = data => {
       labelData.primary = data.name;
       break;
     case "session":
-      labelData.secondary = data.name;
+      labelData.secondary = data.session_name;
       break;
     case "flight":
       labelData.secondary = data.duration;
@@ -142,6 +142,7 @@ const highlightPerson = (node, cy) => {
       },
       avoidOverlap: true,
       padding: layoutPadding,
+      minNodeSpacing: 40,
       concentric: function(ele) {
         if (ele.same(node)) {
           return 2;
